@@ -1,0 +1,1427 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Wina Bwangu</title>
+
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- Primary Navigation Sidebar -->
+    <aside>
+      <h1>Wina Bwangu</h1>
+
+      <nav>
+        <a href="#" data-page="dashboard">Dashboard</a>
+        <a href="#" data-page="cash-services">Cash Services</a>
+        <a href="#" data-page="transactions">Transactions</a>
+        <a href="#" data-page="settings">Settings</a>
+        <a href="#" data-page="users">Users</a>
+      </nav>
+    </aside>
+
+
+    <!-- Main Application Content -->
+    <main>
+
+      <!-- Application Header -->
+      <section class="page-header top-header">
+        <div class="section-header">
+          <header class="top-bar">
+
+            <div class="search">
+              <input type="text" placeholder="Search..." />
+            </div>
+
+            <div class="profile">
+              <span>JD</span>
+            </div>
+
+          </header>
+        </div>
+      </section>
+
+
+      <!-- Dashboard Page -->
+      <div class="page-content" id="dashboard">
+
+        <section class="page-header">
+          <div class="section-header">
+            <h2>Dashboard</h2>
+            <p>Overview of your business activity and performance</p>
+          </div>
+        </section>
+
+        <section class="page-body">
+
+          <div class="summary-cards">
+
+            <div class="card">
+              <h3>Total Revenue</h3>
+              <p>K0.00</p>
+            </div>
+
+            <div class="card">
+              <h3>Total Transactions</h3>
+              <p>5</p>
+            </div>
+
+            <div class="card">
+              <h3>Credit Utilised</h3>
+              <p>0</p>
+            </div>
+
+            <div class="card">
+              <h3>Active Booths</h3>
+              <p>6</p>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- Dashboard Charts -->
+        <section class="dashboard-charts">
+
+          <!-- Revenue by Service -->
+          <div class="dashboard-chart-card">
+
+            <div class="dashboard-chart-header">
+              <h3>Revenue by Service</h3>
+            </div>
+
+            <div class="dashboard-chart-body">
+              <canvas id="revenue-by-service-chart"></canvas>
+            </div>
+
+          </div>
+
+
+          <!-- Credit Utilization -->
+          <div class="dashboard-chart-card">
+
+            <div class="dashboard-chart-header">
+              <h3>Credit Utilization</h3>
+            </div>
+
+            <div class="dashboard-chart-body">
+              <canvas id="credit-utilization-chart"></canvas>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- Service Performance -->
+        <section class="dashboard-service-panel">
+
+          <div class="dashboard-service-header">
+            <div>
+              <h3>Service Performance</h3>
+              <p>Transaction, revenue and credit utilisation by service</p>
+            </div>
+          </div>
+
+          <div class="dashboard-service-table-wrapper">
+
+            <table class="dashboard-service-table">
+
+              <thead>
+                <tr>
+                  <th>Service</th>
+                  <th>Transactions</th>
+                  <th>Revenue (ZMW)</th>
+                  <th>Credit Used</th>
+                  <th>Remaining</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr>
+                  <td>Airtel Money</td>
+                  <td>875.00</td>
+                  <td>K 4,375.00</td>
+                  <td>K 87,500.00</td>
+                  <td>K 262,500.00</td>
+                  <td>
+                    <span class="service-status good">Good</span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>MTN Money</td>
+                  <td>400.00</td>
+                  <td>K 2,400.00</td>
+                  <td>K 40,000.00</td>
+                  <td>K 120,000.00</td>
+                  <td>
+                    <span class="service-status good">Good</span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>Zamtel Money</td>
+                  <td>175.00</td>
+                  <td>K 787.50</td>
+                  <td>K 17,500.00</td>
+                  <td>K 52,500.00</td>
+                  <td>
+                    <span class="service-status good">Good</span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>Zanaco</td>
+                  <td>200.00</td>
+                  <td>K 700.00</td>
+                  <td>K 20,000.00</td>
+                  <td>K 60,000.00</td>
+                  <td>
+                    <span class="service-status good">Good</span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>FNB</td>
+                  <td>200.00</td>
+                  <td>K 800.00</td>
+                  <td>K 20,000.00</td>
+                  <td>K 60,000.00</td>
+                  <td>
+                    <span class="service-status good">Good</span>
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- Cash Services Page -->
+      <div class="page-content" id="cash-services">
+
+        <section class="page-header">
+          <div class="section-header">
+            <h2>Cash Services</h2>
+            <p>Process customer cash deposit and withdrawal transactions</p>
+          </div>
+        </section>
+
+
+        <!-- Cash Services Workspace -->
+        <div class="cash-service-content">
+
+          <!-- Cash Transaction Form -->
+          <section class="cash-transaction">
+
+            <!-- Transaction Type Selection -->
+            <div class="form-group">
+              <label for="transaction-type">Transaction Type</label>
+              <select name="" id="transaction-type">
+                <option value="" selected disabled>Select Transaction Type</option>
+                <option value="deposit">Cash Deposit</option>
+                <option value="withdrawal">Cash Withdrawal</option>
+              </select>
+            </div>
+
+            <!-- Booth Selection -->
+            <div class="form-group">
+              <label for="booth">Select Booth</label>
+              <select name="" id="booth">
+                <option value="" selected disabled>Select Booth</option>
+              </select>
+            </div>
+
+            <!-- Selected Booth Location -->
+            <div class="calculation-row">
+              <span>Location:</span>
+              <strong id="booth-location">-</strong>
+            </div>
+
+            <!-- Service Selection -->
+            <div class="form-group">
+              <label for="service">Select Service</label>
+              <select name="" id="service" disabled>
+                <option value="" selected>Select Service</option>
+              </select>
+            </div>
+
+            <!-- Service Revenue Information -->
+            <div class="calculation-row">
+              <span>Revenue per Kwacha:</span>
+              <strong id="revenue-rate">-</strong>
+            </div>
+
+            <!-- Customer Phone Number -->
+            <div class="form-group" id="phone-number-group" hidden>
+              <label for="phone-number">Phone Number</label>
+
+              <input type="tel" id="phone-number" placeholder="Enter phone number" />
+            </div>
+
+
+            <!-- Customer Account Number -->
+            <div class="form-group" id="account-number-group" hidden>
+              <label for="account-number">Account Number</label>
+
+              <input type="text" id="account-number" placeholder="Enter account number" />
+            </div>
+
+
+            <!-- Transaction Amount -->
+            <div class="form-group">
+              <label for="amount">Amount (ZMW)</label>
+
+              <input type="number" id="amount" min="0" step="0.01" placeholder="Enter amount" />
+            </div>
+
+
+            <!-- Calculated Withdrawal Fee -->
+            <div class="calculation-row" id="withdrawal-fee-row">
+              <span>Withdrawal Fee (1.5%):</span>
+              <strong id="withdrawal-fee">-</strong>
+            </div>
+
+
+            <!-- Calculated Amount After Fee -->
+            <div class="calculation-row" id="amount-after-fee-row">
+              <span>Amount After Fee:</span>
+              <strong id="amount-after-fee">-</strong>
+            </div>
+
+
+            <!-- Transaction Submission -->
+            <button type="button" class="process-transaction" id="process-transaction">
+              Process Transaction
+            </button>
+
+          </section>
+
+
+          <!-- Today's Transaction Summary -->
+          <section class="todays-transactions">
+
+            <div class="cash-section-header">
+              <h3>Today's Transactions</h3>
+              <p>Cash transactions processed today</p>
+            </div>
+
+
+            <!-- Daily Transaction Metrics -->
+            <div class="transaction-summary">
+
+              <div class="transaction-stat">
+                <span class="stat-value" id="today-total">
+                  K0.00
+                </span>
+
+                <span class="stat-label">
+                  Total Deposited
+                </span>
+              </div>
+
+
+              <div class="transaction-stat">
+                <span class="stat-value" id="today-count">
+                  0
+                </span>
+
+                <span class="stat-label">
+                  Deposits
+                </span>
+              </div>
+
+
+              <div class="transaction-stat">
+                <span class="stat-value" id="today-total">
+                  K0.00
+                </span>
+
+                <span class="stat-label">
+                  Total Withdrawn
+                </span>
+              </div>
+
+
+              <div class="transaction-stat">
+                <span class="stat-value" id="today-count">
+                  0
+                </span>
+
+                <span class="stat-label">
+                  Withdrawals
+                </span>
+              </div>
+
+            </div>
+
+
+            <!-- Recent Transaction Activity -->
+            <div class="recent-activity">
+
+              <h4>Recent Activity</h4>
+
+              <div class="transaction-list">
+
+                <div class="empty-transactions">
+                  <span>No transactions today</span>
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </div>
+
+
+      <!-- Transactions Page -->
+      <div class="page-content" id="transactions">
+
+        <section class="page-header">
+          <div class="section-header">
+            <h2>Transactions</h2>
+            <p>View and manage all cash deposit and withdrawal transactions</p>
+          </div>
+        </section>
+
+
+        <!-- Transaction Overview -->
+        <section class="transaction-overview">
+
+          <div class="transaction-overview-card">
+            <span class="overview-label">Total Transactions</span>
+            <strong class="overview-value">0</strong>
+          </div>
+
+          <div class="transaction-overview-card">
+            <span class="overview-label">Total Deposits</span>
+            <strong class="overview-value">K0.00</strong>
+          </div>
+
+          <div class="transaction-overview-card">
+            <span class="overview-label">Total Withdrawals</span>
+            <strong class="overview-value">K0.00</strong>
+          </div>
+
+          <div class="transaction-overview-card">
+            <span class="overview-label">Total Revenue</span>
+            <strong class="overview-value">K0.00</strong>
+          </div>
+
+        </section>
+
+
+        <!-- Transaction History and Reporting -->
+        <section class="transactions-panel">
+
+          <div class="transactions-panel-header">
+
+            <div>
+              <h3>Transaction History</h3>
+              <p>Review transactions processed across all booths</p>
+            </div>
+
+            <div class="transaction-report-actions">
+
+              <button type="button" class="transaction-report-btn" id="print-transactions">
+                Print Report
+              </button>
+
+              <button type="button" class="transaction-export-btn" id="export-transactions">
+                Export Report
+              </button>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Transaction Filters -->
+          <div class="transaction-filters">
+
+            <div class="filter-group">
+              <label for="transaction-search">Search</label>
+              <input type="text" id="transaction-search" placeholder="Search transaction..." />
+            </div>
+
+            <div class="filter-group">
+              <label for="transaction-type-filter">Transaction Type</label>
+
+              <select id="transaction-type-filter">
+                <option value="">All Types</option>
+                <option value="deposit">Cash Deposit</option>
+                <option value="withdrawal">Cash Withdrawal</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="booth-filter">Booth</label>
+
+              <select id="booth-filter">
+                <option value="">All Booths</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="service-filter">Service</label>
+
+              <select id="service-filter">
+                <option value="">All Services</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="start-date-filter">Start Date</label>
+              <input type="date" id="start-date-filter" />
+            </div>
+
+            <div class="filter-group">
+              <label for="end-date-filter">End Date</label>
+              <input type="date" id="end-date-filter" />
+            </div>
+
+          </div>
+
+
+          <!-- Transaction History Table -->
+          <div class="transactions-table-wrapper">
+
+            <table class="transactions-table">
+
+              <thead>
+                <tr>
+                  <th>Transaction ID</th>
+                  <th>Type</th>
+                  <th>Date & Time</th>
+                  <th>Booth</th>
+                  <th>Location</th>
+                  <th>Service</th>
+                  <th>Amount (ZMW)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr class="empty-table-row">
+                  <td colspan="8">
+                    No transactions found
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- Settings Page -->
+      <div class="page-content" id="settings">
+
+        <section class="page-header">
+          <div class="section-header">
+            <h2>Settings</h2>
+            <p>Manage booths, services and transaction settings</p>
+          </div>
+        </section>
+
+
+        <div class="settings-content">
+
+          <!-- Booth Management -->
+          <section class="settings-panel">
+
+            <div class="settings-panel-header">
+              <div>
+                <h3>Booths</h3>
+                <p>Manage Wina Bwangu booth locations</p>
+              </div>
+
+              <button type="button" class="settings-primary-btn">
+                Add Booth
+              </button>
+            </div>
+
+
+            <div class="settings-table-wrapper">
+
+              <table class="settings-table">
+
+                <thead>
+                  <tr>
+                    <th>Booth</th>
+                    <th>Location</th>
+                    <th>Services</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  <tr class="empty-table-row">
+                    <td colspan="4">
+                      No booths found
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </section>
+
+
+          <!-- Service Management -->
+          <section class="settings-panel">
+
+            <div class="settings-panel-header">
+              <div>
+                <h3>Services</h3>
+                <p>Manage transaction services and revenue rates</p>
+              </div>
+
+              <button type="button" class="settings-primary-btn">
+                Add Service
+              </button>
+            </div>
+
+
+            <div class="settings-table-wrapper">
+
+              <table class="settings-table">
+
+                <thead>
+                  <tr>
+                    <th>Service</th>
+                    <th>Monthly Transaction Limit</th>
+                    <th>Revenue Rate</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  <tr class="empty-table-row">
+                    <td colspan="4">
+                      No services found
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </section>
+
+
+          <!-- Transaction Configuration -->
+          <section class="settings-panel">
+
+            <div class="settings-panel-header">
+              <div>
+                <h3>Transaction Settings</h3>
+                <p>Configure transaction fees and processing rules</p>
+              </div>
+            </div>
+
+
+            <div class="settings-form">
+
+              <div class="settings-form-group">
+                <label for="withdrawal-fee-setting">
+                  Withdrawal Fee (%)
+                </label>
+
+                <input type="number" id="withdrawal-fee-setting" value="1.5" min="0" step="0.01" />
+              </div>
+
+
+              <div class="settings-form-actions">
+
+                <button type="button" class="settings-save-btn">
+                  Save Changes
+                </button>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </div>
+
+
+      <!-- Users Page -->
+      <div class="page-content" id="users">
+
+        <section class="page-header">
+          <div class="section-header">
+            <h2>Users</h2>
+            <p>Manage system users, roles, booth assignments and service access</p>
+          </div>
+        </section>
+
+        <!-- User Overview Metrics -->
+        <section class="user-overview">
+
+          <div class="user-overview-card">
+            <div>
+              <span class="user-overview-value">1</span>
+              <span class="user-overview-label">System Administrators</span>
+            </div>
+
+            <div class="user-overview-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M19 8v6"></path>
+                <path d="M22 11h-6"></path>
+              </svg>
+            </div>
+          </div>
+
+
+          <div class="user-overview-card">
+            <div>
+              <span class="user-overview-value">1</span>
+              <span class="user-overview-label">Admin Agents</span>
+            </div>
+
+            <div class="user-overview-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M17 11l2 2 4-4"></path>
+              </svg>
+            </div>
+          </div>
+
+
+          <div class="user-overview-card">
+            <div>
+              <span class="user-overview-value">1</span>
+              <span class="user-overview-label">Agents</span>
+            </div>
+
+            <div class="user-overview-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+            </div>
+          </div>
+
+
+          <div class="user-overview-card">
+            <div>
+              <span class="user-overview-value">3</span>
+              <span class="user-overview-label">Total Users</span>
+            </div>
+
+            <div class="user-overview-icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+          </div>
+
+        </section>
+
+        <section class="users-panel">
+
+          <!-- User Filters -->
+          <div class="user-filters">
+
+            <div class="user-filter-group">
+              <label for="user-role-filter">Filter by Role:</label>
+
+              <select id="user-role-filter">
+                <option value="all">All Roles</option>
+                <option value="system_admin">System Admin</option>
+                <option value="admin_agent">Admin Agent</option>
+                <option value="agent">Agent</option>
+              </select>
+            </div>
+
+
+            <div class="user-filter-group">
+              <label for="user-status-filter">Filter by Status:</label>
+
+              <select id="user-status-filter">
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="users-panel-header">
+
+            <div>
+              <h3>User Management</h3>
+              <p>Manage users and their access to Wina Bwangu</p>
+            </div>
+
+            <button type="button" class="users-primary-btn" id="add-user-btn">
+              Add New User
+            </button>
+
+          </div>
+
+
+          <div class="users-table-wrapper">
+
+            <table class="users-table">
+
+              <thead>
+                <tr>
+                  <th>Full Name</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Company</th>
+                  <th>Assigned Booth</th>
+                  <th>Assigned Services</th>
+                  <th>Last Login</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr>
+                  <td>Mweetwa Chinene</td>
+                  <td>admin</td>
+                  <td>admin@gmail.com</td>
+                  <td>System Administrator</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>9/21/2026</td>
+                  <td>
+                    <span class="user-status active">Active</span>
+                  </td>
+                  <td class="user-actions">
+                    <button type="button" class="user-action-btn">
+                      Edit
+                    </button>
+
+                    <button type="button" class="user-action-btn delete">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+
+
+                <tr>
+                  <td>Mweetwa Chinene</td>
+                  <td>admin_agent</td>
+                  <td>admin_agent@gmail.com</td>
+                  <td>Admin Agent</td>
+                  <td>Wina Bwangu</td>
+                  <td>Wina1, Wina2, Wina3</td>
+                  <td>
+                    Airtel Money, MTN Money, Zamtel Money, Zanaco, FNB
+                  </td>
+                  <td>9/20/2026</td>
+                  <td>
+                    <span class="user-status active">Active</span>
+                  </td>
+                  <td class="user-actions">
+                    <button type="button" class="user-action-btn">
+                      Edit
+                    </button>
+
+                    <button type="button" class="user-action-btn delete">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+
+
+                <tr>
+                  <td>Mweetwa Chinene</td>
+                  <td>agent</td>
+                  <td>agent@gmail.com</td>
+                  <td>Agent</td>
+                  <td>Wina Bwangu</td>
+                  <td>Wina4</td>
+                  <td>
+                    Airtel Money, MTN Money, Zamtel Money
+                  </td>
+                  <td>9/20/2026</td>
+                  <td>
+                    <span class="user-status active">Active</span>
+                  </td>
+                  <td class="user-actions">
+                    <button type="button" class="user-action-btn">
+                      Edit
+                    </button>
+
+                    <button type="button" class="user-action-btn delete">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+      </div>
+
+  </div>
+
+  </main>
+
+  </div>
+
+
+  <!-- Transaction Receipt Modal -->
+  <div class="receipt-modal" id="receipt-modal" hidden>
+
+    <div class="receipt-modal-backdrop"></div>
+
+    <div class="receipt-modal-content" role="dialog" aria-modal="true" aria-labelledby="receipt-title">
+
+      <div class="receipt-modal-header">
+
+        <div>
+          <h3 id="receipt-title">Transaction Receipt</h3>
+          <p>Wina Bwangu</p>
+        </div>
+
+        <button type="button" class="receipt-close-btn" aria-label="Close receipt">
+          &times;
+        </button>
+
+      </div>
+
+
+      <div class="receipt-status">
+        <span class="receipt-status-badge">Completed</span>
+      </div>
+
+
+      <div class="receipt-details">
+
+        <div class="receipt-row">
+          <span>Transaction ID</span>
+          <strong id="receipt-transaction-id">-</strong>
+        </div>
+
+        <div class="receipt-row">
+          <span>Transaction Type</span>
+          <strong id="receipt-type">-</strong>
+        </div>
+
+        <div class="receipt-row">
+          <span>Date &amp; Time</span>
+          <strong id="receipt-date">-</strong>
+        </div>
+
+        <div class="receipt-row">
+          <span>Booth</span>
+          <strong id="receipt-booth">-</strong>
+        </div>
+
+        <div class="receipt-row">
+          <span>Location</span>
+          <strong id="receipt-location">-</strong>
+        </div>
+
+        <div class="receipt-row">
+          <span>Service</span>
+          <strong id="receipt-service">-</strong>
+        </div>
+
+        <div class="receipt-row" id="receipt-phone-row" hidden>
+          <span>Phone Number</span>
+          <strong id="receipt-phone">-</strong>
+        </div>
+
+        <div class="receipt-row" id="receipt-account-row" hidden>
+          <span>Account Number</span>
+          <strong id="receipt-account">-</strong>
+        </div>
+
+        <div class="receipt-row">
+          <span>Revenue per Kwacha</span>
+          <strong id="receipt-revenue-rate">-</strong>
+        </div>
+
+        <div class="receipt-row" id="receipt-fee-row">
+          <span>Withdrawal Fee</span>
+          <strong id="receipt-fee">-</strong>
+        </div>
+
+        <div class="receipt-row" id="receipt-amount-after-fee-row">
+          <span>Amount After Fee</span>
+          <strong id="receipt-amount-after-fee">-</strong>
+        </div>
+
+      </div>
+
+
+      <div class="receipt-total">
+        <span>Amount</span>
+        <strong id="receipt-amount">K0.00</strong>
+      </div>
+
+
+      <div class="receipt-modal-footer">
+
+        <button type="button" class="receipt-print-btn">
+          Print Receipt
+        </button>
+
+        <button type="button" class="receipt-done-btn">
+          Close
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Booth Management Modal -->
+  <div class="settings-modal" id="booth-modal" hidden>
+
+    <div class="settings-modal-backdrop"></div>
+
+    <div class="settings-modal-content" role="dialog" aria-modal="true" aria-labelledby="booth-modal-title">
+
+      <div class="settings-modal-header">
+
+        <div>
+          <h3 id="booth-modal-title">Add Booth</h3>
+          <p>Enter the booth details and available services</p>
+        </div>
+
+        <button type="button" class="settings-modal-close" aria-label="Close booth modal">
+          &times;
+        </button>
+
+      </div>
+
+
+      <div class="settings-modal-body">
+
+        <!-- Booth Identifier -->
+        <div class="settings-modal-group">
+          <label for="booth-code">Booth</label>
+
+          <input type="text" id="booth-code" placeholder="Enter booth name" />
+        </div>
+
+
+        <!-- Selected Booth Location -->
+        <div class="settings-modal-group">
+          <label for="booth-location-setting">Location</label>
+
+          <input type="text" id="booth-location-setting" placeholder="Enter booth location" />
+        </div>
+
+
+        <!-- Available Service Assignment -->
+        <div class="settings-modal-group">
+
+          <label>Available Services</label>
+
+          <div class="service-checkbox-list">
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="booth-services" value="Airtel Money" />
+              <span>Airtel Money</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="booth-services" value="MTN Money" />
+              <span>MTN Money</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="booth-services" value="Zamtel Money" />
+              <span>Zamtel Money</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="booth-services" value="Zanaco" />
+              <span>Zanaco</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="booth-services" value="FNB" />
+              <span>FNB</span>
+            </label>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="settings-modal-footer">
+
+        <button type="button" class="settings-modal-cancel">
+          Cancel
+        </button>
+
+        <button type="button" class="settings-modal-save" id="save-booth">
+          Save Booth
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Service Management Modal -->
+  <div class="settings-modal" id="service-modal" hidden>
+
+    <div class="settings-modal-backdrop"></div>
+
+    <div class="settings-modal-content" role="dialog" aria-modal="true" aria-labelledby="service-modal-title">
+
+      <div class="settings-modal-header">
+
+        <div>
+          <h3 id="service-modal-title">Add Service</h3>
+          <p>Configure the service and transaction requirements</p>
+        </div>
+
+        <button type="button" class="settings-modal-close" aria-label="Close service modal">
+          &times;
+        </button>
+
+      </div>
+
+
+      <div class="settings-modal-body">
+
+        <!-- Service Name -->
+        <div class="settings-modal-group">
+          <label for="service-name">Service Name</label>
+
+          <input type="text" id="service-name" placeholder="Enter service name" />
+        </div>
+
+
+        <!-- Monthly Transaction Limit -->
+        <div class="settings-modal-group">
+          <label for="service-monthly-limit">
+            Monthly Transaction Limit (ZMW)
+          </label>
+
+          <input type="number" id="service-monthly-limit" min="0" step="0.01"
+            placeholder="Enter monthly transaction limit" />
+        </div>
+
+
+        <!-- Service Revenue Rate -->
+        <div class="settings-modal-group">
+          <label for="service-revenue-rate">
+            Revenue Rate
+          </label>
+
+          <input type="number" id="service-revenue-rate" min="0" step="0.001" placeholder="Enter revenue rate" />
+        </div>
+
+
+        <!-- Customer Identifier Type -->
+        <div class="settings-modal-group">
+
+          <label for="service-identifier-type">
+            Customer Identifier
+          </label>
+
+          <select id="service-identifier-type">
+            <option value="" selected disabled>
+              Select identifier type
+            </option>
+
+            <option value="phone">
+              Phone Number
+            </option>
+
+            <option value="account">
+              Account Number
+            </option>
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="settings-modal-footer">
+
+        <button type="button" class="settings-modal-cancel">
+          Cancel
+        </button>
+
+        <button type="button" class="settings-modal-save" id="save-service">
+          Save Service
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- User Management Modal -->
+  <div class="settings-modal" id="user-modal" hidden>
+
+    <div class="settings-modal-backdrop"></div>
+
+    <div class="settings-modal-content user-modal-content" role="dialog" aria-modal="true"
+      aria-labelledby="user-modal-title">
+
+      <div class="settings-modal-header">
+
+        <div>
+          <h3 id="user-modal-title">Add New User</h3>
+          <p>Create a user and configure their access</p>
+        </div>
+
+        <button type="button" class="settings-modal-close" aria-label="Close user modal">
+          &times;
+        </button>
+
+      </div>
+
+
+      <div class="settings-modal-body">
+
+        <div class="user-form-grid">
+
+          <div class="settings-modal-group">
+            <label for="user-username">Username *</label>
+            <input type="text" id="user-username" placeholder="Enter username" />
+          </div>
+
+          <div class="settings-modal-group">
+            <label for="user-full-name">Full Name *</label>
+            <input type="text" id="user-full-name" placeholder="Enter full name" />
+          </div>
+
+          <div class="settings-modal-group user-form-full">
+            <label for="user-email">Email Address *</label>
+            <input type="email" id="user-email" placeholder="Enter email address" />
+          </div>
+
+          <div class="settings-modal-group">
+            <label for="user-password">Password *</label>
+            <input type="password" id="user-password" placeholder="Enter password" />
+          </div>
+
+          <div class="settings-modal-group">
+            <label for="user-confirm-password">Confirm Password *</label>
+            <input type="password" id="user-confirm-password" placeholder="Confirm password" />
+          </div>
+
+
+          <div class="settings-modal-group">
+            <label for="user-role">User Role *</label>
+
+            <select id="user-role">
+              <option value="" selected disabled>Select Role</option>
+              <option value="system_admin">System Administrator</option>
+              <option value="admin_agent">Admin Agent</option>
+              <option value="agent">Agent</option>
+            </select>
+          </div>
+
+
+          <div class="settings-modal-group">
+            <label for="user-status">Status</label>
+
+            <select id="user-status">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+
+
+          <div class="settings-modal-group user-form-full">
+            <label for="user-company">Company *</label>
+
+            <select id="user-company">
+              <option value="" selected disabled>Select Company</option>
+              <option value="wina_bwangu">Wina Bwangu</option>
+              <option value="other">Other Company</option>
+            </select>
+          </div>
+
+        </div>
+
+
+        <!-- User Booth Assignment -->
+
+        <div class="user-assignment-section">
+
+          <div class="user-assignment-header">
+            <div>
+              <h4>Assign Booth *</h4>
+              <p>Select the booths this user can access</p>
+            </div>
+          </div>
+
+          <div class="user-checkbox-grid">
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-booths" value="Wina1" />
+              <span>Wina1</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-booths" value="Wina2" />
+              <span>Wina2</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-booths" value="Wina3" />
+              <span>Wina3</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-booths" value="Wina4" />
+              <span>Wina4</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-booths" value="Wina5" />
+              <span>Wina5</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-booths" value="Wina6" />
+              <span>Wina6</span>
+            </label>
+
+          </div>
+
+          <p class="assignment-empty">
+            No booths assigned
+          </p>
+
+        </div>
+
+
+        <!-- User Service Assignment -->
+
+        <div class="user-assignment-section">
+
+          <div class="user-assignment-header">
+            <div>
+              <h4>Assign Services *</h4>
+              <p>Select the services this user can access</p>
+            </div>
+          </div>
+
+          <div class="user-checkbox-grid">
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-services" value="Airtel Money" />
+              <span>Airtel Money</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-services" value="MTN Money" />
+              <span>MTN Money</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-services" value="Zamtel Money" />
+              <span>Zamtel Money</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-services" value="Zanaco" />
+              <span>Zanaco</span>
+            </label>
+
+            <label class="service-checkbox">
+              <input type="checkbox" name="user-services" value="FNB" />
+              <span>FNB</span>
+            </label>
+
+          </div>
+
+          <p class="assignment-empty">
+            No services assigned
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="settings-modal-footer">
+
+        <button type="button" class="settings-modal-cancel">
+          Cancel
+        </button>
+
+        <button type="button" class="settings-modal-save" id="save-user">
+          Add User
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <script src="./js/app.js"></script>
+
+</body>
+
+</html>
