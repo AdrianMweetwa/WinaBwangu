@@ -24,5 +24,30 @@ const schema = fs.readFileSync(schemaPath, "utf8");
 // Execute the SQL statements in the schema file to create the necessary tables and relationships in the database
 db.exec(schema);
 
+// Bring databases created by earlier versions up to the current schema without
+// replacing existing booth, service, or transaction records.
+const migrations = [
+  ["services", "identifier_type", "TEXT NOT NULL DEFAULT 'phone'"],
+  ["transactions", "phone_number", "TEXT NOT NULL DEFAULT ''"],
+  ["transactions", "account_number", "TEXT NOT NULL DEFAULT ''"],
+];
+
+for (const [table, column, definition] of migrations) {
+  const hasColumn = db
+    .prepare(`PRAGMA table_info(${table})`)
+    .all()
+    .some((entry) => entry.name === column);
+
+  if (!hasColumn) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
+}
+
+// Older seeded service rows predate identifier_type; restore the intended
+// account-number behavior for the bank services when they are encountered.
+db.prepare(
+  "UPDATE services SET identifier_type = 'account' WHERE service IN ('Zanaco', 'FNB') AND identifier_type = 'phone'",
+).run();
+
 // Export the database connection object so that it can be used in other parts of the application
 module.exports = db;

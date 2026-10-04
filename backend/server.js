@@ -5,14 +5,16 @@ const db = require("./db"); // Import the database connection object from db.js
 const boothsRouter = require("./routes/booths"); // Import the booths router to handle routes related to booths
 const servicesRouter = require("./routes/services"); // Import the services router to handle routes related to services
 const transactionsRouter = require("./routes/transactions"); // Import the transactions router to handle routes related to transactions
+const usersRouter = require("./routes/users"); // Import the users router to handle routes related to users
 
 const app = express(); // Create an instance of the Express application
-const PORT = 1000; // Define the port number on which the server will listen for incoming requests
+const PORT = 3000; // Define the port number on which the server will listen for incoming requests (matches README)
 
 app.use(express.json()); // Middleware to parse incoming JSON requests
 app.use("/api/booths", boothsRouter); // Use the booths router for routes related to booths
 app.use("/api/services", servicesRouter); // Use the services router for routes related to services
 app.use("/api/transactions", transactionsRouter); // Use the transactions router for routes related to transactions
+app.use("/api/users", usersRouter); // Use the users router for routes related to users
 
 app.use(express.static(path.join(__dirname, "..", "frontend"))); // Serve static files from the "public" directory
 

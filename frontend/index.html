@@ -65,22 +65,22 @@
 
             <div class="card">
               <h3>Total Revenue</h3>
-              <p>K0.00</p>
+              <p id="dash-total-revenue">K0.00</p>
             </div>
 
             <div class="card">
               <h3>Total Transactions</h3>
-              <p>5</p>
+              <p id="dash-total-transactions">0</p>
             </div>
 
             <div class="card">
               <h3>Credit Utilised</h3>
-              <p>0</p>
+              <p id="dash-credit-utilised">0%</p>
             </div>
 
             <div class="card">
               <h3>Active Booths</h3>
-              <p>6</p>
+              <p id="dash-active-booths">0</p>
             </div>
 
           </div>
@@ -98,7 +98,7 @@
             </div>
 
             <div class="dashboard-chart-body">
-              <canvas id="revenue-by-service-chart"></canvas>
+              <div id="revenue-by-service-chart" class="simple-bar-chart"></div>
             </div>
 
           </div>
@@ -112,7 +112,7 @@
             </div>
 
             <div class="dashboard-chart-body">
-              <canvas id="credit-utilization-chart"></canvas>
+              <div id="credit-utilization-chart" class="simple-bar-chart"></div>
             </div>
 
           </div>
@@ -144,63 +144,10 @@
                 </tr>
               </thead>
 
-              <tbody>
-
-                <tr>
-                  <td>Airtel Money</td>
-                  <td>875.00</td>
-                  <td>K 4,375.00</td>
-                  <td>K 87,500.00</td>
-                  <td>K 262,500.00</td>
-                  <td>
-                    <span class="service-status good">Good</span>
-                  </td>
+              <tbody id="dashboard-service-tbody">
+                <tr class="empty-table-row">
+                  <td colspan="6">No services found</td>
                 </tr>
-
-                <tr>
-                  <td>MTN Money</td>
-                  <td>400.00</td>
-                  <td>K 2,400.00</td>
-                  <td>K 40,000.00</td>
-                  <td>K 120,000.00</td>
-                  <td>
-                    <span class="service-status good">Good</span>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>Zamtel Money</td>
-                  <td>175.00</td>
-                  <td>K 787.50</td>
-                  <td>K 17,500.00</td>
-                  <td>K 52,500.00</td>
-                  <td>
-                    <span class="service-status good">Good</span>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>Zanaco</td>
-                  <td>200.00</td>
-                  <td>K 700.00</td>
-                  <td>K 20,000.00</td>
-                  <td>K 60,000.00</td>
-                  <td>
-                    <span class="service-status good">Good</span>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>FNB</td>
-                  <td>200.00</td>
-                  <td>K 800.00</td>
-                  <td>K 20,000.00</td>
-                  <td>K 60,000.00</td>
-                  <td>
-                    <span class="service-status good">Good</span>
-                  </td>
-                </tr>
-
               </tbody>
 
             </table>
@@ -326,7 +273,7 @@
             <div class="transaction-summary">
 
               <div class="transaction-stat">
-                <span class="stat-value" id="today-total">
+                <span class="stat-value" id="today-deposit-total">
                   K0.00
                 </span>
 
@@ -337,7 +284,7 @@
 
 
               <div class="transaction-stat">
-                <span class="stat-value" id="today-count">
+                <span class="stat-value" id="today-deposit-count">
                   0
                 </span>
 
@@ -348,7 +295,7 @@
 
 
               <div class="transaction-stat">
-                <span class="stat-value" id="today-total">
+                <span class="stat-value" id="today-withdrawal-total">
                   K0.00
                 </span>
 
@@ -359,7 +306,7 @@
 
 
               <div class="transaction-stat">
-                <span class="stat-value" id="today-count">
+                <span class="stat-value" id="today-withdrawal-count">
                   0
                 </span>
 
@@ -376,7 +323,7 @@
 
               <h4>Recent Activity</h4>
 
-              <div class="transaction-list">
+              <div class="transaction-list" id="recent-activity-list">
 
                 <div class="empty-transactions">
                   <span>No transactions today</span>
@@ -409,22 +356,22 @@
 
           <div class="transaction-overview-card">
             <span class="overview-label">Total Transactions</span>
-            <strong class="overview-value">0</strong>
+            <strong class="overview-value" id="overview-total-count">0</strong>
           </div>
 
           <div class="transaction-overview-card">
             <span class="overview-label">Total Deposits</span>
-            <strong class="overview-value">K0.00</strong>
+            <strong class="overview-value" id="overview-total-deposits">K0.00</strong>
           </div>
 
           <div class="transaction-overview-card">
             <span class="overview-label">Total Withdrawals</span>
-            <strong class="overview-value">K0.00</strong>
+            <strong class="overview-value" id="overview-total-withdrawals">K0.00</strong>
           </div>
 
           <div class="transaction-overview-card">
             <span class="overview-label">Total Revenue</span>
-            <strong class="overview-value">K0.00</strong>
+            <strong class="overview-value" id="overview-total-revenue">K0.00</strong>
           </div>
 
         </section>
@@ -521,7 +468,7 @@
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody id="transactions-tbody">
 
                 <tr class="empty-table-row">
                   <td colspan="8">
@@ -562,7 +509,7 @@
                 <p>Manage Wina Bwangu booth locations</p>
               </div>
 
-              <button type="button" class="settings-primary-btn">
+              <button type="button" class="settings-primary-btn" id="add-booth-btn">
                 Add Booth
               </button>
             </div>
@@ -581,7 +528,7 @@
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="settings-booths-tbody">
 
                   <tr class="empty-table-row">
                     <td colspan="4">
@@ -607,7 +554,7 @@
                 <p>Manage transaction services and revenue rates</p>
               </div>
 
-              <button type="button" class="settings-primary-btn">
+              <button type="button" class="settings-primary-btn" id="add-service-btn">
                 Add Service
               </button>
             </div>
@@ -626,7 +573,7 @@
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="settings-services-tbody">
 
                   <tr class="empty-table-row">
                     <td colspan="4">
@@ -697,7 +644,7 @@
 
           <div class="user-overview-card">
             <div>
-              <span class="user-overview-value">1</span>
+              <span class="user-overview-value" id="users-count-system-admin">0</span>
               <span class="user-overview-label">System Administrators</span>
             </div>
 
@@ -714,7 +661,7 @@
 
           <div class="user-overview-card">
             <div>
-              <span class="user-overview-value">1</span>
+              <span class="user-overview-value" id="users-count-admin-agent">0</span>
               <span class="user-overview-label">Admin Agents</span>
             </div>
 
@@ -730,7 +677,7 @@
 
           <div class="user-overview-card">
             <div>
-              <span class="user-overview-value">1</span>
+              <span class="user-overview-value" id="users-count-agent">0</span>
               <span class="user-overview-label">Agents</span>
             </div>
 
@@ -745,7 +692,7 @@
 
           <div class="user-overview-card">
             <div>
-              <span class="user-overview-value">3</span>
+              <span class="user-overview-value" id="users-count-total">0</span>
               <span class="user-overview-label">Total Users</span>
             </div>
 
@@ -823,83 +770,10 @@
                 </tr>
               </thead>
 
-              <tbody>
-
-                <tr>
-                  <td>Mweetwa Chinene</td>
-                  <td>admin</td>
-                  <td>admin@gmail.com</td>
-                  <td>System Administrator</td>
-                  <td>N/A</td>
-                  <td>N/A</td>
-                  <td>N/A</td>
-                  <td>9/21/2026</td>
-                  <td>
-                    <span class="user-status active">Active</span>
-                  </td>
-                  <td class="user-actions">
-                    <button type="button" class="user-action-btn">
-                      Edit
-                    </button>
-
-                    <button type="button" class="user-action-btn delete">
-                      Delete
-                    </button>
-                  </td>
+              <tbody id="users-tbody">
+                <tr class="empty-table-row">
+                  <td colspan="10">No users found</td>
                 </tr>
-
-
-                <tr>
-                  <td>Mweetwa Chinene</td>
-                  <td>admin_agent</td>
-                  <td>admin_agent@gmail.com</td>
-                  <td>Admin Agent</td>
-                  <td>Wina Bwangu</td>
-                  <td>Wina1, Wina2, Wina3</td>
-                  <td>
-                    Airtel Money, MTN Money, Zamtel Money, Zanaco, FNB
-                  </td>
-                  <td>9/20/2026</td>
-                  <td>
-                    <span class="user-status active">Active</span>
-                  </td>
-                  <td class="user-actions">
-                    <button type="button" class="user-action-btn">
-                      Edit
-                    </button>
-
-                    <button type="button" class="user-action-btn delete">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-
-
-                <tr>
-                  <td>Mweetwa Chinene</td>
-                  <td>agent</td>
-                  <td>agent@gmail.com</td>
-                  <td>Agent</td>
-                  <td>Wina Bwangu</td>
-                  <td>Wina4</td>
-                  <td>
-                    Airtel Money, MTN Money, Zamtel Money
-                  </td>
-                  <td>9/20/2026</td>
-                  <td>
-                    <span class="user-status active">Active</span>
-                  </td>
-                  <td class="user-actions">
-                    <button type="button" class="user-action-btn">
-                      Edit
-                    </button>
-
-                    <button type="button" class="user-action-btn delete">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-
               </tbody>
 
             </table>

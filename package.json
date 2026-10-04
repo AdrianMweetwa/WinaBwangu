@@ -4,15 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node backend/server.js",
+    "seed": "node database/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "scripts":{
-    "start": "node backend/server.js"
-  },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
     "express": "^5.2.1"

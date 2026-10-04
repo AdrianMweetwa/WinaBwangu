@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS services(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     service TEXT NOT NULL UNIQUE,
     monthly_transaction_limit REAL NOT NULL,
-    revenue_rate REAL NOT NULL
+    revenue_rate REAL NOT NULL,
+    identifier_type TEXT NOT NULL DEFAULT 'phone' -- 'phone' or 'account': which field a transaction for this service collects
 );
 
 -- create booth services table
@@ -45,10 +46,21 @@ CREATE TABLE IF NOT EXISTS transactions(
     FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE
 );
 
--- -- creating a users table to store user information
--- CREATE TABLE IF NOT EXISTS users(
---     id INTEGER PRIMARY KEY AUTOINCREMENT,
---     username TEXT NOT NULL UNIQUE,
---     password TEXT NOT NULL,
---     role TEXT NOT NULL
--- );  
+-- creating a users table to store user information
+-- assigned_booths / assigned_services are stored as comma-separated codes/names
+-- (e.g. "Wina1,Wina2") rather than join tables, since a user's access list is
+-- edited as a whole from the Users form rather than queried relationally
+CREATE TABLE IF NOT EXISTS users(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    full_name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    role TEXT NOT NULL, -- 'system_admin' | 'admin_agent' | 'agent'
+    company TEXT,
+    assigned_booths TEXT NOT NULL DEFAULT '',
+    assigned_services TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'active', -- 'active' | 'inactive'
+    last_login TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);

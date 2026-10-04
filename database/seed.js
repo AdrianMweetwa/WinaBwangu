@@ -1,5 +1,6 @@
 // load the existing database connection from db.js
 const db = require("../backend/db");
+const { hashPassword } = require("../backend/utils/password");
 
 // add the Wina Bwangu booths array to the database
 const booths = [
@@ -19,19 +20,21 @@ for (const booth of booths) {
 }
 
 // add the services array to the database
+// Mobile money services identify customers by phone number; bank services
+// (Zanaco, FNB) identify customers by account number.
 const services = [
-  ["Airtel Money", 350000, 0.05],
-  ["MTN Money", 160000, 0.06],
-  ["Zamtel Money", 70000, 0.045],
-  ["Zanaco", 80000, 0.035],
-  ["FNB", 80000, 0.04],
+  ["Airtel Money", 350000, 0.05, "phone"],
+  ["MTN Money", 160000, 0.06, "phone"],
+  ["Zamtel Money", 70000, 0.045, "phone"],
+  ["Zanaco", 80000, 0.035, "account"],
+  ["FNB", 80000, 0.04, "account"],
 ];
 
 const insertService = db.prepare(
-  "INSERT OR IGNORE INTO services (service, monthly_transaction_limit, revenue_rate) VALUES (?, ?, ?)",
+  "INSERT OR IGNORE INTO services (service, monthly_transaction_limit, revenue_rate, identifier_type) VALUES (?, ?, ?, ?)",
 ); // Prepare an SQL statement to insert a new service into the services table
 for (const service of services) {
-  insertService.run(service[0], service[1], service[2]); // Execute the prepared statement for each service in the services array
+  insertService.run(service[0], service[1], service[2], service[3]); // Execute the prepared statement for each service in the services array
 }
 
 // Link each booth to the services they offer in the booth_services table
@@ -66,5 +69,49 @@ for (const boothService of boothServices) {
     insertBoothService.run(booth.id, service.id); // Link the booth and service using their database IDs
   }
 }
+
+// Seed three demo accounts (one per role) so the Users page has real data to
+// show out of the box. Default password for all demo accounts is "password123"
+// — change these before using this seed in anything beyond a class project.
+const insertUser = db.prepare(`
+  INSERT OR IGNORE INTO users
+    (username, full_name, email, password_hash, role, company, assigned_booths, assigned_services, status)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active')
+`);
+
+const demoPasswordHash = hashPassword("password123");
+
+insertUser.run(
+  "admin",
+  "Mweetwa Chinene",
+  "admin@gmail.com",
+  demoPasswordHash,
+  "system_admin",
+  null,
+  "",
+  "",
+);
+
+insertUser.run(
+  "admin_agent",
+  "Mweetwa Chinene",
+  "admin_agent@gmail.com",
+  demoPasswordHash,
+  "admin_agent",
+  "Wina Bwangu",
+  "Wina1,Wina2,Wina3",
+  "Airtel Money,MTN Money,Zamtel Money,Zanaco,FNB",
+);
+
+insertUser.run(
+  "agent",
+  "Mweetwa Chinene",
+  "agent@gmail.com",
+  demoPasswordHash,
+  "agent",
+  "Wina Bwangu",
+  "Wina4",
+  "Airtel Money,MTN Money,Zamtel Money",
+);
 
 console.log("Database seeded successfully!"); // Log a message indicating that the database seeding process has completed successfully

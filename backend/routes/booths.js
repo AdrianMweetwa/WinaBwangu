@@ -29,4 +29,53 @@ router.get("/:booth/services", (req, res) => {
 });
 
 
+// Create a new booth and link it to the services it offers
+router.post("/", (req, res) => {
+  const { booth, location, services } = req.body;
+
+  if (!booth || !location) {
+    return res.status(400).json({ error: "booth and location are required" });
+  }
+
+  try {
+    const result = db
+      .prepare("INSERT INTO booths (booth, location) VALUES (?, ?)")
+      .run(booth, location);
+
+    const findService = db.prepare("SELECT id FROM services WHERE service = ?");
+    const linkService = db.prepare(
+      "INSERT OR IGNORE INTO booth_services (booth_id, service_id) VALUES (?, ?)",
+    );
+    for (const serviceName of services || []) {
+      const service = findService.get(serviceName);
+      if (service) linkService.run(result.lastInsertRowid, service.id);
+    }
+
+    res.status(201).json({ message: "Booth created successfully", id: result.lastInsertRowid });
+  } catch (error) {
+    if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      return res.status(400).json({ error: "A booth with this code already exists" });
+    }
+    console.error("Booth create error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete a booth, unless it already has transaction history (to avoid silently
+// wiping out financial records via the schema's ON DELETE CASCADE)
+router.delete("/:id", (req, res) => {
+  const hasTransactions = db
+    .prepare("SELECT 1 FROM transactions WHERE booth_id = ? LIMIT 1")
+    .get(req.params.id);
+  if (hasTransactions) {
+    return res.status(400).json({ error: "Cannot delete a booth that has recorded transactions" });
+  }
+
+  const result = db.prepare("DELETE FROM booths WHERE id = ?").run(req.params.id);
+  if (result.changes === 0) {
+    return res.status(404).json({ error: "Booth not found" });
+  }
+  res.json({ message: "Booth deleted successfully" });
+});
+
 module.exports = router; // Export the router object so that it can be used in other parts of the application
