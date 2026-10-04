@@ -1,0 +1,107 @@
+﻿/* --- Page navigation (added to wire up JS-driven routing) --- */
+
+.page-content {
+  display: none;
+}
+
+.page-content.active {
+  display: block;
+}
+
+nav a.active {
+  background-color: #c94b52;
+}
+
+/* Simple bar-chart bars drawn by app.js (no charting library) */
+
+.simple-bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 4px;
+}
+
+.simple-bar-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 90px;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.simple-bar-track {
+  background-color: #ebeeef;
+  border-radius: 6px;
+  height: 14px;
+  overflow: hidden;
+}
+
+.simple-bar-fill {
+  height: 100%;
+  background-color: #9d1d23;
+  border-radius: 6px;
+}
+
+.service-status.warning {
+  background-color: #fff3cd;
+  color: #8a6d1a;
+}
+
+.service-status.exceeded {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+/* Consistent status badges */
+
+.service-status,
+.user-status,
+.receipt-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 64px;
+  padding: 4px 8px;
+
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.service-status::before,
+.user-status::before,
+.receipt-status-badge::before {
+  display: none;
+}
+
+.service-status.good,
+.user-status.active,
+.receipt-status-badge.completed {
+  background-color: #198754;
+  border-color: #198754;
+  color: #ffffff;
+}
+
+.service-status.warning {
+  background-color: #e0a800;
+  border-color: #e0a800;
+  color: #332600;
+}
+
+.service-status.exceeded,
+.user-status.inactive {
+  background-color: #b02a37;
+  border-color: #b02a37;
+  color: #ffffff;
+}
+
+.receipt-status-badge {
+  background-color: #198754;
+  border-color: #198754;
+  color: #ffffff;
+}

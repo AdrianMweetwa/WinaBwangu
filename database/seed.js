@@ -1,8 +1,8 @@
-// load the existing database connection from db.js
+// We seed the case-study reference data for our Wina Bwangu project.
 const db = require("../backend/db");
 const { hashPassword } = require("../backend/utils/password");
+const { calculateTransactionAmounts } = require("../backend/utils/transaction-rules");
 
-// add the Wina Bwangu booths array to the database
 const booths = [
   ["Wina1", "Lusaka CPD"],
   ["Wina2", "Libala"],
@@ -12,16 +12,6 @@ const booths = [
   ["Wina6", "Matero East"],
 ];
 
-const insertBooth = db.prepare(
-  "INSERT OR IGNORE INTO booths (booth, location) VALUES (?, ?)",
-); // Prepare an SQL statement to insert a new booth into the booths table
-for (const booth of booths) {
-  insertBooth.run(booth[0], booth[1]); // Execute the prepared statement for each booth in the booths array
-}
-
-// add the services array to the database
-// Mobile money services identify customers by phone number; bank services
-// (Zanaco, FNB) identify customers by account number.
 const services = [
   ["Airtel Money", 350000, 0.05, "phone"],
   ["MTN Money", 160000, 0.06, "phone"],
@@ -30,14 +20,6 @@ const services = [
   ["FNB", 80000, 0.04, "account"],
 ];
 
-const insertService = db.prepare(
-  "INSERT OR IGNORE INTO services (service, monthly_transaction_limit, revenue_rate, identifier_type) VALUES (?, ?, ?, ?)",
-); // Prepare an SQL statement to insert a new service into the services table
-for (const service of services) {
-  insertService.run(service[0], service[1], service[2], service[3]); // Execute the prepared statement for each service in the services array
-}
-
-// Link each booth to the services they offer in the booth_services table
 const boothServices = [
   ["Wina1", "Airtel Money", "MTN Money", "Zamtel Money", "Zanaco", "FNB"],
   ["Wina2", "Airtel Money", "MTN Money", "Zamtel Money", "FNB"],
@@ -47,51 +29,107 @@ const boothServices = [
   ["Wina6", "Airtel Money", "MTN Money", "Zamtel Money"],
 ];
 
-const findBooth = db.prepare(`
-    SELECT id FROM booths WHERE booth = ?
-`); // Prepare an SQL statement to find a booth by its booth and retrieve its ID
+// Appendix 1 rows: [reference, booth, service, revenue rate, amount].
+const appendixTransactions = require("./appendix-transactions");
 
-const findService = db.prepare(`
-    SELECT id FROM services WHERE service = ?
-`); // Prepare an SQL statement to find a service by its service and retrieve its ID
+const insertBooth = db.prepare(
+  "INSERT OR IGNORE INTO booths (booth, location) VALUES (?, ?)",
+);
+for (const [booth, location] of booths) {
+  insertBooth.run(booth, location);
+}
 
+const insertService = db.prepare(
+  "INSERT OR IGNORE INTO services (service, monthly_transaction_limit, revenue_rate, identifier_type) VALUES (?, ?, ?, ?)",
+);
+for (const service of services) {
+  insertService.run(...service);
+}
+
+const findBooth = db.prepare("SELECT id FROM booths WHERE booth = ?");
+const findService = db.prepare("SELECT id, revenue_rate FROM services WHERE service = ?");
 const insertBoothService = db.prepare(
   "INSERT OR IGNORE INTO booth_services (booth_id, service_id) VALUES (?, ?)",
-); // Prepare an SQL statement to link a booth to a service in the booth_services table
+);
 
-for (const boothService of boothServices) {
-  const boothCode = boothService[0]; // Get the booth code from the current array
-  const booth = findBooth.get(boothCode); // Find the booth ID using its code
-  for (let i = 1; i < boothService.length; i++) {
-    // Loop through the services offered by the booth, starting from index 1
-    const serviceName = boothService[i]; // Get the service name
-    const service = findService.get(serviceName); // Find the service ID using its name
-    insertBoothService.run(booth.id, service.id); // Link the booth and service using their database IDs
+for (const [boothCode, ...serviceNames] of boothServices) {
+  const booth = findBooth.get(boothCode);
+  for (const serviceName of serviceNames) {
+    const service = findService.get(serviceName);
+    insertBoothService.run(booth.id, service.id);
   }
 }
 
-// Seed three demo accounts (one per role) so the Users page has real data to
-// show out of the box. Default password for all demo accounts is "password123"
-// — change these before using this seed in anything beyond a class project.
+function expectedTransactionId(index) {
+  return `WB${String(index).padStart(7, "0")}`;
+}
+
+const insertTransaction = db.prepare(`
+  INSERT INTO transactions (
+    transaction_id,
+    transaction_type,
+    booth_id,
+    service_id,
+    transaction_amount,
+    phone_number,
+    account_number,
+    transaction_tax,
+    transaction_amount_after_tax,
+    transaction_revenue,
+    transaction_date
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`);
+
+const seedTransactions = db.transaction(() => {
+  // Replace existing sample rows with our exact Appendix 1 dataset.
+  db.prepare("DELETE FROM transactions").run();
+
+  for (const transaction of appendixTransactions) {
+    const booth = findBooth.get(transaction.booth_code);
+    const service = findService.get(transaction.service_name);
+    if (!booth || !service) {
+      throw new Error(`Appendix row ${transaction.transaction_id} references missing booth/service`);
+    }
+    if (Math.abs(Number(service.revenue_rate) - transaction.revenue_rate) > 0.000001) {
+      throw new Error(`Revenue rate mismatch for ${transaction.transaction_id} (${transaction.service_name})`);
+    }
+    if (transaction.transaction_id !== expectedTransactionId(Number(transaction.transaction_id.slice(2)))) {
+      throw new Error(`Invalid transaction reference ${transaction.transaction_id}`);
+    }
+    if (transaction.booth_id !== booth.id || transaction.service_id !== service.id) {
+      throw new Error(`Foreign-key mismatch for ${transaction.transaction_id}`);
+    }
+    const calculated = calculateTransactionAmounts(
+      transaction.transaction_amount,
+      service.revenue_rate,
+    );
+
+    insertTransaction.run(
+      transaction.transaction_id,
+      transaction.transaction_type,
+      transaction.booth_id,
+      transaction.service_id,
+      transaction.transaction_amount,
+      transaction.phone_number,
+      transaction.account_number,
+      calculated.tax,
+      calculated.amountAfterTax,
+      calculated.revenue,
+      transaction.transaction_date,
+    );
+  }
+});
+seedTransactions();
+
+// Keep our demo users available for testing the Users page.
 const insertUser = db.prepare(`
   INSERT OR IGNORE INTO users
     (username, full_name, email, password_hash, role, company, assigned_booths, assigned_services, status)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active')
 `);
-
 const demoPasswordHash = hashPassword("password123");
 
-insertUser.run(
-  "admin",
-  "Mweetwa Chinene",
-  "admin@gmail.com",
-  demoPasswordHash,
-  "system_admin",
-  null,
-  "",
-  "",
-);
-
+insertUser.run("admin", "Mweetwa Chinene", "admin@gmail.com", demoPasswordHash, "system_admin", null, "", "");
 insertUser.run(
   "admin_agent",
   "Mweetwa Chinene",
@@ -102,7 +140,6 @@ insertUser.run(
   "Wina1,Wina2,Wina3",
   "Airtel Money,MTN Money,Zamtel Money,Zanaco,FNB",
 );
-
 insertUser.run(
   "agent",
   "Mweetwa Chinene",
@@ -114,4 +151,4 @@ insertUser.run(
   "Airtel Money,MTN Money,Zamtel Money",
 );
 
-console.log("Database seeded successfully!"); // Log a message indicating that the database seeding process has completed successfully
+console.log(`Database seeded successfully with ${appendixTransactions.length} Appendix 1 transactions.`);

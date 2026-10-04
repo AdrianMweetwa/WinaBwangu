@@ -1,0 +1,425 @@
+﻿/* Cash Services Page */
+
+.page-header.top-header {
+  margin-top: 15px;
+  padding: 10px 15px;
+}
+
+.page-header {
+  margin-top: 30px;
+
+  margin-bottom: 30px;
+
+  padding: 15px;
+
+  background: #ffffff;
+
+  border: 1px solid #e1e5eb;
+
+  border-radius: 16px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.section-header {
+  margin-bottom: 0;
+}
+
+.section-header h2 {
+  margin: 0;
+
+  color: #9d1d23;
+
+  font-size: 25px;
+
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.section-header p {
+  margin: 6px 0 0;
+
+  color: #999;
+
+  font-size: 16px;
+
+  font-weight: 400;
+
+  line-height: 1.5;
+}
+
+/* =========================
+   CASH SERVICES
+========================= */
+
+.cash-service-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+
+  margin-top: 20px;
+}
+
+/* Primary Cash Service Panels */
+
+.cash-transaction,
+.todays-transactions {
+  padding: 22px;
+
+  background-color: #ffffff;
+
+  border: 1px solid #e1e5eb;
+  border-radius: 16px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+  box-sizing: border-box;
+}
+
+/* Section Header */
+
+.cash-section-header {
+  margin-bottom: 22px;
+}
+
+.cash-section-header h3 {
+  margin: 0;
+
+  color: #9d1d23;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.cash-section-header p {
+  margin: 5px 0 0;
+
+  color: #999999;
+
+  font-size: 14px;
+}
+
+.cash-form-feedback {
+  margin: -8px 0 18px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.cash-form-feedback.loading {
+  color: #555555;
+  background-color: #f1f3f4;
+  border-color: #d9dde1;
+}
+
+.cash-form-feedback.error {
+  color: #8f2525;
+  background-color: #fbe9e9;
+  border-color: #e5b8b8;
+}
+
+.cash-form-feedback.success {
+  color: #1f6b32;
+  background-color: #d9f0dc;
+  border-color: #9dcc9f;
+}
+
+/* Transaction Form Controls */
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #333333;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-group select,
+.form-group input {
+  width: 100%;
+  height: 44px;
+
+  padding: 0 13px;
+
+  font-family: "Ubuntu", sans-serif;
+  font-size: 14px;
+  line-height: 1.2;
+
+  color: #333333;
+  background-color: #ffffff;
+
+  border: 1px solid #d9dde1;
+  border-radius: 6px;
+
+  outline: none;
+
+  box-sizing: border-box;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+  border-color: #9d1d23;
+  box-shadow: none;
+}
+
+.form-group select:focus-visible,
+.form-group input:focus-visible {
+  outline: none;
+  outline-offset: 0;
+}
+
+.form-group input.input-invalid,
+.form-group select.input-invalid {
+  border-color: #b02a37;
+  box-shadow: 0 0 0 3px rgba(176, 42, 55, 0.1);
+}
+
+.field-hint {
+  margin: -7px 0 16px;
+  color: #777777;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.form-group select:disabled,
+.form-group input:disabled {
+  background-color: #f4f5f6;
+  color: #999999;
+  cursor: not-allowed;
+}
+
+/* Calculated Transaction Information */
+
+.calculation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  min-height: 36px;
+
+  padding: 0 14px;
+  margin-bottom: 16px;
+
+  background-color: #f4f5f6;
+
+  border: 1px solid #e1e5eb;
+  border-radius: 8px;
+
+  box-sizing: border-box;
+
+  font-size: 14px;
+}
+
+.calculation-row span {
+  color: #333333;
+  font-weight: 500;
+}
+
+.calculation-row strong {
+  color: #9d1d23;
+  font-weight: 600;
+}
+
+/* Transaction Submission */
+
+.process-transaction {
+  width: 100%;
+  height: 48px;
+
+  margin-top: 5px;
+
+  border: none;
+  border-radius: 8px;
+
+  background-color: #9d1d23;
+  color: #ffffff;
+
+  font-family: "Ubuntu", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+}
+
+.process-transaction:hover {
+  background-color: #a31d1e;
+}
+
+.process-transaction:disabled {
+  background-color: #c78b8f;
+  cursor: wait;
+}
+
+/* Daily Transaction Summary */
+
+.transaction-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+
+  margin-bottom: 25px;
+}
+
+.transaction-stat {
+  min-height: 85px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 15px 18px;
+
+  background-color: #f7f8f9;
+
+  border: 1px solid #e1e5eb;
+  border-radius: 10px;
+
+  box-sizing: border-box;
+}
+
+.stat-value {
+  color: #9d1d23;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.stat-label {
+  margin-top: 5px;
+
+  color: #777777;
+
+  font-size: 14px;
+}
+
+/* Recent Transaction Activity */
+
+.recent-activity h4 {
+  margin: 0 0 12px;
+
+  color: #9d1d23;
+
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.transaction-list {
+  min-height: 200px;
+  padding: 10px 12px;
+
+  border: 1px solid #e1e5eb;
+  border-radius: 10px;
+
+  background-color: #f7f8f9;
+}
+
+.empty-transactions {
+  min-height: 200px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #999999;
+
+  font-size: 14px;
+}
+
+.transaction-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+
+  border: 1px solid #dfe3e7;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.transaction-row:last-child {
+  margin-bottom: 0;
+}
+
+.transaction-row-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.transaction-row-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.transaction-reference {
+  color: #333333;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.activity-type {
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.activity-type.deposit {
+  color: #147a42;
+  background-color: #e5f5eb;
+}
+
+.activity-type.withdrawal {
+  color: #a32b2b;
+  background-color: #fbe8e8;
+}
+
+.activity-meta {
+  overflow: hidden;
+  color: #777777;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activity-amount {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.activity-amount.deposit {
+  color: #009c62;
+}
+
+.activity-amount.withdrawal {
+  color: #b02a37;
+}
+
+/* Responsive Layout */
+
+@media (max-width: 900px) {
+  .cash-service-content {
+    grid-template-columns: 1fr;
+  }
+}
+

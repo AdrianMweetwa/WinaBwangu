@@ -6,17 +6,43 @@ const boothsRouter = require("./routes/booths"); // Import the booths router to 
 const servicesRouter = require("./routes/services"); // Import the services router to handle routes related to services
 const transactionsRouter = require("./routes/transactions"); // Import the transactions router to handle routes related to transactions
 const usersRouter = require("./routes/users"); // Import the users router to handle routes related to users
+const authRouter = require("./routes/auth");
+const { requireAuth, requireCapability } = require("./middleware/auth");
+const { getCookie, getUserForSession } = require("./auth/session");
 
 const app = express(); // Create an instance of the Express application
 const PORT = 3000; // Define the port number on which the server will listen for incoming requests (matches README)
 
 app.use(express.json()); // Middleware to parse incoming JSON requests
-app.use("/api/booths", boothsRouter); // Use the booths router for routes related to booths
-app.use("/api/services", servicesRouter); // Use the services router for routes related to services
-app.use("/api/transactions", transactionsRouter); // Use the transactions router for routes related to transactions
-app.use("/api/users", usersRouter); // Use the users router for routes related to users
+app.use("/api/auth", authRouter);
+app.use("/api/booths", requireAuth, boothsRouter); // Use the booths router for routes related to booths
+app.use("/api/services", requireAuth, servicesRouter); // Use the services router for routes related to services
+app.use("/api/transactions", requireAuth, transactionsRouter); // Use the transactions router for routes related to transactions
+app.use("/api/users", requireAuth, requireCapability("users.manage"), usersRouter); // User administration is system-admin only
 
-app.use(express.static(path.join(__dirname, "..", "frontend"))); // Serve static files from the "public" directory
+function serveDashboard(req, res) {
+  const user = getUserForSession(getCookie(req, "wb_session"));
+  if (!user) return res.redirect("/login");
+  return res.sendFile("index.html", {
+    root: path.resolve(__dirname, "..", "frontend"),
+  });
+}
+
+app.get("/", serveDashboard);
+app.get("/index.html", serveDashboard);
+app.use(express.static(path.join(__dirname, "..", "frontend"), { index: false })); // Serve authenticated app assets
+
+app.get("/login", (req, res) => {
+  res.sendFile("login.html", {
+    root: path.resolve(__dirname, "..", "frontend"),
+  });
+});
+
+app.get("/forgot-password", (req, res) => {
+  res.sendFile("forgot-password.html", {
+    root: path.resolve(__dirname, "..", "frontend"),
+  });
+});
 
 // Define a route to handle GET requests to the root URL ("/")
 // The route sends the "index.html" file located in the "frontend" directory as a response

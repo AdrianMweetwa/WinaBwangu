@@ -1,0 +1,365 @@
+﻿/* =========================
+   SETTINGS MODALS
+========================= */
+
+.settings-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+}
+
+.settings-modal[hidden] {
+  display: none;
+}
+
+/* Modal Backdrop */
+
+.settings-modal-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+/* Modal Container */
+
+.settings-modal-content {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  max-width: 520px;
+
+  max-height: 90vh;
+  overflow-y: auto;
+
+  background-color: #ffffff;
+
+  border-radius: 16px;
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+}
+
+/* Modal Header */
+
+.settings-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 22px 24px;
+
+  border-bottom: 1px solid #e1e5eb;
+}
+
+.settings-modal-header h3 {
+  margin: 0;
+
+  color: #9d1d23;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.settings-modal-header p {
+  margin: 5px 0 0;
+
+  color: #999999;
+
+  font-size: 14px;
+}
+
+/* Modal Close Control */
+
+.settings-modal-close {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  background-color: transparent;
+  color: #777777;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 26px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.settings-modal-close:hover {
+  background-color: #f4f5f6;
+  color: #9d1d23;
+}
+
+/* Modal Body */
+
+.settings-modal-body {
+  padding: 22px 24px;
+}
+
+/* Modal Form Fields */
+
+.settings-modal-group {
+  margin-bottom: 18px;
+}
+
+.settings-modal-group:last-child {
+  margin-bottom: 0;
+}
+
+.settings-modal-group > label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #333333;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.settings-modal-group input[type="text"],
+.settings-modal-group input[type="number"],
+.settings-modal-group select {
+  width: 100%;
+  height: 46px;
+
+  padding: 0 14px;
+
+  font-family: "Ubuntu", sans-serif;
+  font-size: 14px;
+
+  color: #333333;
+  background-color: #ffffff;
+
+  border: 1px solid #d9dde1;
+  border-radius: 8px;
+
+  outline: none;
+  box-sizing: border-box;
+}
+
+.settings-modal-group input:focus,
+.settings-modal-group select:focus {
+  border-color: #9d1d23;
+
+  box-shadow: 0 0 0 3px rgba(157, 29, 35, 0.08);
+}
+
+/* Booth Service Assignment */
+
+.service-checkbox-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 10px;
+}
+
+.service-checkbox {
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 12px;
+
+  background-color: #f7f8f9;
+
+  border: 1px solid #e1e5eb;
+  border-radius: 8px;
+
+  box-sizing: border-box;
+
+  cursor: pointer;
+}
+
+.service-checkbox:hover {
+  border-color: #9d1d23;
+}
+
+.service-checkbox input {
+  width: 16px;
+  height: 16px;
+
+  margin: 0;
+
+  accent-color: #9d1d23;
+}
+
+.service-checkbox span {
+  color: #333333;
+
+  font-size: 14px;
+}
+
+/* Modal Actions */
+
+.settings-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding: 18px 24px 22px;
+
+  border-top: 1px solid #e1e5eb;
+}
+
+.settings-modal-cancel,
+.settings-modal-save {
+  height: 42px;
+
+  padding: 0 18px;
+
+  font-family: "Ubuntu", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+.settings-modal-cancel {
+  background-color: #ffffff;
+  color: #333333;
+
+  border: 1px solid #d9dde1;
+}
+
+.settings-modal-save {
+  background-color: #9d1d23;
+  color: #ffffff;
+
+  border: 1px solid #9d1d23;
+}
+
+.settings-modal-cancel:hover {
+  background-color: #f7f8f9;
+}
+
+.settings-modal-save:hover {
+  background-color: #a31d1e;
+}
+
+.settings-modal-save:disabled {
+  background-color: #c78b8f;
+  border-color: #c78b8f;
+  cursor: wait;
+}
+
+/* Transaction Confirmation Modal */
+
+.confirmation-modal-body {
+  padding-bottom: 10px;
+}
+
+.confirmation-summary {
+  overflow: hidden;
+  border: 1px solid #e1e5eb;
+  border-radius: 10px;
+}
+
+.confirmation-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 14px;
+  border-bottom: 1px solid #ebeeef;
+}
+
+.confirmation-row:last-child {
+  border-bottom: none;
+}
+
+.confirmation-row span {
+  color: #777777;
+  font-size: 14px;
+}
+
+.confirmation-row strong {
+  color: #333333;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.confirmation-total {
+  background-color: #f7f8f9;
+}
+
+.confirmation-total strong {
+  color: #9d1d23;
+  font-size: 18px;
+}
+
+.crud-confirmation-body p,
+.crud-success-body p {
+  margin: 0;
+  color: #555555;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.crud-success-body {
+  text-align: center;
+}
+
+.crud-success-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  color: #ffffff;
+  background-color: #198754;
+  border-radius: 50%;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+/* Responsive Layout */
+
+@media (max-width: 600px) {
+  .settings-modal {
+    padding: 12px;
+  }
+
+  .service-checkbox-list {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .settings-modal-cancel,
+  .settings-modal-save {
+    width: 100%;
+  }
+}
+

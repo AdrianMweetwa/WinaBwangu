@@ -1,0 +1,211 @@
+﻿/* =========================
+   SETTINGS
+========================= */
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Settings Panels */
+
+.settings-panel {
+  padding: 22px;
+
+  background-color: #ffffff;
+
+  border: 1px solid #e1e5eb;
+  border-radius: 16px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+  box-sizing: border-box;
+}
+
+/* Modal Header */
+
+.settings-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+.settings-panel-header h3 {
+  margin: 0;
+
+  color: #9d1d23;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.settings-panel-header p {
+  margin: 5px 0 0;
+
+  color: #999999;
+
+  font-size: 14px;
+}
+
+/* Settings Actions */
+
+.settings-primary-btn,
+.settings-save-btn {
+  height: 40px;
+
+  padding: 0 16px;
+
+  background-color: #9d1d23;
+  color: #ffffff;
+
+  border: 1px solid #9d1d23;
+  border-radius: 8px;
+
+  font-family: "Ubuntu", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.settings-primary-btn:hover,
+.settings-save-btn:hover {
+  background-color: #a31d1e;
+}
+
+.settings-read-only {
+  color: #8a919b;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Settings Tables */
+
+.settings-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+
+  border: 1px solid #e1e5eb;
+  border-radius: 10px;
+}
+
+.settings-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 700px;
+}
+
+.settings-table th {
+  padding: 13px 15px;
+
+  background-color: #9d1d23;
+  color: #ffffff;
+
+  text-align: left;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.settings-table td {
+  padding: 5px 12px;
+
+  color: #333333;
+
+  border-bottom: 1px solid #e1e5eb;
+
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.settings-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.settings-table tbody tr:hover:not(.empty-table-row) {
+  background-color: #f7f8f9;
+}
+
+/* Transaction Configuration */
+
+.settings-form {
+  max-width: 500px;
+}
+
+.settings-form-group {
+  margin-bottom: 20px;
+}
+
+.settings-form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #333333;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.settings-form-group input,
+.settings-form-group select {
+  width: 100%;
+  height: 46px;
+
+  padding: 0 14px;
+
+  font-family: "Ubuntu", sans-serif;
+  font-size: 14px;
+
+  color: #333333;
+  background-color: #ffffff;
+
+  border: 1px solid #d9dde1;
+  border-radius: 8px;
+
+  outline: none;
+  box-sizing: border-box;
+}
+
+.settings-form-group input:focus,
+.settings-form-group select:focus {
+  border-color: #9d1d23;
+  box-shadow: 0 0 0 3px rgba(157, 29, 35, 0.08);
+}
+
+.settings-form-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Responsive Layout */
+
+@media (max-width: 700px) {
+  .settings-panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .settings-primary-btn {
+    width: 100%;
+  }
+
+  .settings-form {
+    max-width: 100%;
+  }
+
+  .settings-save-btn {
+    width: 100%;
+  }
+}
+

@@ -1,6 +1,6 @@
 # WinaBwangu
 
-WinaBwangu is a web application for managing booths, financial services, and transactions.
+WinaBwangu is our group web application for managing booths, financial services, and transactions.
 
 ## Technologies
 
@@ -52,6 +52,13 @@ http://localhost:3000
 * Deposit and Withdrawal transactions
 * SQLite database
 * API health check
+* Secure session-based authentication
+* Role-based access for system administrators, admin agents and agents
+* Logout and password recovery flow
+
+## Submission materials
+
+The `submission/` directory contains our implementation report, formal test plan and conceptual, use-case and ER diagrams required by the assignment. Our reproducible Appendix 1 seed contains 308 sequential transactions. Run `node database\\seed.js` before the final demonstration so the local database matches the documented dataset.
 
 ## Project Structure
 
@@ -82,6 +89,6 @@ WinaBwangu/
 
 ## Author
 
-**Adrian Mweetwa**
+**Group submission — add all group member names before submission**
 
 GitHub: https://github.com/AdrianMweetwa

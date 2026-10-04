@@ -1,6 +1,12 @@
 const express = require("express");
 const db = require("../db");
 const { hashPassword } = require("../utils/password");
+const {
+  isNonEmptyString,
+  isValidEmail,
+  VALID_ROLES,
+  VALID_STATUSES,
+} = require("../utils/validation");
 
 const router = express.Router();
 
@@ -42,15 +48,20 @@ router.post("/", (req, res) => {
     status,
   } = req.body;
 
-  if (!username || !full_name || !email || !password || !role) {
+  if (
+    !isNonEmptyString(username, 50) ||
+    !isNonEmptyString(full_name, 120) ||
+    !isValidEmail(email) ||
+    typeof password !== "string" ||
+    password.length < 8 ||
+    !VALID_ROLES.includes(role)
+  ) {
     return res.status(400).json({
-      error: "username, full_name, email, password and role are required",
+      error: "Valid username, full name, email, password and role are required",
     });
   }
-
-  const validRoles = ["system_admin", "admin_agent", "agent"];
-  if (!validRoles.includes(role)) {
-    return res.status(400).json({ error: "Invalid role" });
+  if (status !== undefined && !VALID_STATUSES.includes(status)) {
+    return res.status(400).json({ error: "Invalid status" });
   }
 
   try {
@@ -61,9 +72,9 @@ router.post("/", (req, res) => {
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
-        username,
-        full_name,
-        email,
+        username.trim(),
+        full_name.trim(),
+        email.trim().toLowerCase(),
         hashPassword(password),
         role,
         company || null,
@@ -100,6 +111,25 @@ router.put("/:id", (req, res) => {
     status,
   } = req.body;
 
+  if (username !== undefined && !isNonEmptyString(username, 50)) {
+    return res.status(400).json({ error: "Invalid username" });
+  }
+  if (full_name !== undefined && !isNonEmptyString(full_name, 120)) {
+    return res.status(400).json({ error: "Invalid full name" });
+  }
+  if (email !== undefined && !isValidEmail(email)) {
+    return res.status(400).json({ error: "Invalid email" });
+  }
+  if (password !== undefined && (typeof password !== "string" || password.length < 8)) {
+    return res.status(400).json({ error: "Password must be at least 8 characters" });
+  }
+  if (role !== undefined && !VALID_ROLES.includes(role)) {
+    return res.status(400).json({ error: "Invalid role" });
+  }
+  if (status !== undefined && !VALID_STATUSES.includes(status)) {
+    return res.status(400).json({ error: "Invalid status" });
+  }
+
   try {
     db.prepare(
       `UPDATE users SET
@@ -107,9 +137,9 @@ router.put("/:id", (req, res) => {
         role = ?, company = ?, assigned_booths = ?, assigned_services = ?, status = ?
        WHERE id = ?`,
     ).run(
-      username || existing.username,
-      full_name || existing.full_name,
-      email || existing.email,
+      username !== undefined ? username.trim() : existing.username,
+      full_name !== undefined ? full_name.trim() : existing.full_name,
+      email !== undefined ? email.trim().toLowerCase() : existing.email,
       password ? hashPassword(password) : existing.password_hash,
       role || existing.role,
       company !== undefined ? company : existing.company,

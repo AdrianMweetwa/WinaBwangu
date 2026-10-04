@@ -1,0 +1,345 @@
+/* Functional motion: feedback, hierarchy and state changes without distraction. */
+
+:root {
+  --motion-fast: 160ms;
+  --motion-standard: 260ms;
+  --motion-slow: 420ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modal-backdrop-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-enter {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes dropdown-enter {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes row-enter {
+  from { opacity: 0; transform: translateX(-5px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes feedback-enter {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bar-rise {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(157, 29, 35, 0.18); }
+  50% { box-shadow: 0 0 0 6px rgba(157, 29, 35, 0); }
+}
+
+/* Page and dashboard hierarchy */
+.page-content.active {
+  animation: page-enter var(--motion-standard) var(--motion-ease) both;
+}
+
+.summary-cards .card {
+  animation: card-enter var(--motion-slow) var(--motion-ease) both;
+}
+
+.summary-cards .card:nth-child(2) { animation-delay: 55ms; }
+.summary-cards .card:nth-child(3) { animation-delay: 110ms; }
+.summary-cards .card:nth-child(4) { animation-delay: 165ms; }
+
+.dashboard-service-panel,
+.dashboard-chart-card,
+.cash-service-panel,
+.transaction-overview-card,
+.user-overview-card,
+.todays-transactions,
+.transactions-panel,
+.settings-panel,
+.users-panel {
+  animation: card-enter var(--motion-slow) var(--motion-ease) both;
+}
+
+/* Controls */
+button,
+input,
+select,
+textarea {
+  transition: border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease,
+    background-color var(--motion-fast) ease, color var(--motion-fast) ease,
+    transform var(--motion-fast) ease, opacity var(--motion-fast) ease;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+button:not(:disabled):active {
+  transform: translateY(0) scale(0.98);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(157, 29, 35, 0.22);
+  outline-offset: 2px;
+}
+
+nav a,
+.search-clear,
+.profile,
+.profile-menu-item,
+.search-result,
+.user-action-btn,
+.pagination-btn,
+.service-checkbox,
+.receipt-close-btn,
+.settings-modal-close {
+  transition: background-color var(--motion-fast) ease, border-color var(--motion-fast) ease,
+    color var(--motion-fast) ease, box-shadow var(--motion-fast) ease,
+    transform var(--motion-fast) var(--motion-ease);
+}
+
+nav a:hover {
+  transform: translateX(3px);
+}
+
+nav a:hover .nav-icon {
+  transform: translateX(3px) rotate(-3deg);
+}
+
+.sidebar-toggle:hover,
+.topbar-sidebar-toggle:hover {
+  transform: translateY(-2px) rotate(-2deg);
+}
+
+.card,
+.dashboard-service-panel,
+.dashboard-chart-card,
+.transaction-overview-card,
+.user-overview-card,
+.todays-transactions,
+.transactions-panel,
+.settings-panel,
+.users-panel {
+  transition: box-shadow var(--motion-standard) var(--motion-ease),
+    border-color var(--motion-standard) ease, transform var(--motion-standard) var(--motion-ease);
+}
+
+.card:hover,
+.dashboard-service-panel:hover,
+.dashboard-chart-card:hover,
+.transaction-overview-card:hover,
+.user-overview-card:hover,
+.todays-transactions:hover,
+.transactions-panel:hover,
+.settings-panel:hover,
+.users-panel:hover {
+  border-color: rgba(157, 29, 35, 0.25);
+  box-shadow: 0 10px 24px rgba(42, 48, 56, 0.11);
+  transform: translateY(-3px);
+}
+
+.card:hover .card-icon,
+.card:hover .overview-icon,
+.transaction-overview-card:hover .overview-icon,
+.user-overview-card:hover .user-overview-icon {
+  background-color: rgba(157, 29, 35, 0.1);
+  transform: scale(1.06) rotate(3deg);
+}
+
+.card-icon,
+.overview-icon,
+.user-overview-icon {
+  transition: background-color var(--motion-fast) ease, transform var(--motion-standard) var(--motion-ease);
+}
+
+.transaction-overview-card:nth-child(2),
+.user-overview-card:nth-child(2) { animation-delay: 55ms; }
+
+.transaction-overview-card:nth-child(3),
+.user-overview-card:nth-child(3) { animation-delay: 110ms; }
+
+.transaction-overview-card:nth-child(4),
+.user-overview-card:nth-child(4) { animation-delay: 165ms; }
+
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: #c94b52;
+}
+
+/* Keep form fields clean and flat when active; the border-color still signals focus. */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none !important;
+  outline-offset: 0;
+}
+
+.search:focus-within {
+  box-shadow: none;
+}
+
+tbody tr:not(.empty-table-row):hover,
+.transaction-row:hover {
+  box-shadow: inset 3px 0 0 #c94b52;
+  transform: translateX(3px);
+}
+
+.settings-modal-close:hover,
+.receipt-close-btn:hover {
+  transform: rotate(90deg) scale(1.05);
+}
+
+.search-clear:hover {
+  transform: rotate(90deg) scale(1.05);
+}
+
+.service-checkbox:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(42, 48, 56, 0.1);
+}
+
+.settings-save-btn,
+#process-transaction,
+#confirm-transaction,
+#confirm-crud-action {
+  position: relative;
+  overflow: hidden;
+}
+
+.settings-save-btn::after,
+#process-transaction::after,
+#confirm-transaction::after,
+#confirm-crud-action::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.18), transparent 70%);
+  transform: translateX(-120%);
+}
+
+.settings-save-btn:hover::after,
+#process-transaction:hover::after,
+#confirm-transaction:hover::after,
+#confirm-crud-action:hover::after {
+  transform: translateX(120%);
+  transition: transform 600ms ease;
+}
+
+/* Search/profile menus */
+.search-results:not([hidden]),
+.profile-menu:not([hidden]) {
+  animation: dropdown-enter var(--motion-standard) var(--motion-ease) both;
+  transform-origin: top center;
+}
+
+.search-result {
+  animation: row-enter var(--motion-fast) ease both;
+}
+
+.search-result:nth-child(2) { animation-delay: 25ms; }
+.search-result:nth-child(3) { animation-delay: 50ms; }
+.search-result:nth-child(4) { animation-delay: 75ms; }
+
+/* Data feedback */
+.cash-form-feedback:not([hidden]) {
+  animation: feedback-enter var(--motion-standard) var(--motion-ease) both;
+}
+
+.cash-form-feedback.loading::before {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  content: "";
+  vertical-align: -2px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+.transaction-row,
+tbody tr {
+  animation: row-enter var(--motion-standard) var(--motion-ease) both;
+}
+
+.transaction-row:nth-child(2),
+tbody tr:nth-child(2) { animation-delay: 30ms; }
+
+.transaction-row:nth-child(3),
+tbody tr:nth-child(3) { animation-delay: 60ms; }
+
+.transaction-row:nth-child(4),
+tbody tr:nth-child(4) { animation-delay: 90ms; }
+
+.transaction-row:nth-child(5),
+tbody tr:nth-child(5) { animation-delay: 120ms; }
+
+/* Charts and successful state */
+.proper-bar-chart .bar-chart-column {
+  transform-origin: bottom;
+  animation: bar-rise 650ms var(--motion-ease) both;
+}
+
+.proper-bar-chart .bar-chart-column:nth-child(2) { animation-delay: 55ms; }
+.proper-bar-chart .bar-chart-column:nth-child(3) { animation-delay: 110ms; }
+.proper-bar-chart .bar-chart-column:nth-child(4) { animation-delay: 165ms; }
+.proper-bar-chart .bar-chart-column:nth-child(5) { animation-delay: 220ms; }
+
+.crud-success-body::before {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 12px;
+  content: "✓";
+  place-items: center;
+  color: #ffffff;
+  background: #198754;
+  border-radius: 50%;
+  animation: pulse-ring 1.4s ease-out 1;
+}
+
+/* Keep animation optional for users who request less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}

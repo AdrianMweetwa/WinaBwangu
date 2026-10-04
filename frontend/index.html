@@ -7,23 +7,79 @@
 
   <title>Wina Bwangu</title>
 
-  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/style.css?v=11" />
+  <link rel="stylesheet" href="./css/modules/modals.css?v=5" />
+  <style>
+    body:not(.access-ready) aside { visibility: hidden !important; pointer-events: none; }
+  </style>
 </head>
 
-<body>
+<body class="access-pending">
 
   <div class="app">
 
     <!-- Primary Navigation Sidebar -->
     <aside>
-      <h1>Wina Bwangu</h1>
+      <div class="sidebar-header">
+        <h1>
+          <span class="sidebar-title">Wina Bwangu</span>
+          <span class="sidebar-mark" aria-hidden="true">WB</span>
+        </h1>
+      </div>
 
       <nav>
-        <a href="#" data-page="dashboard">Dashboard</a>
-        <a href="#" data-page="cash-services">Cash Services</a>
-        <a href="#" data-page="transactions">Transactions</a>
-        <a href="#" data-page="settings">Settings</a>
-        <a href="#" data-page="users">Users</a>
+        <a href="#" data-page="dashboard">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" data-page="cash-services">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="M3 9h18"></path>
+              <circle cx="12" cy="14" r="2"></circle>
+            </svg>
+          </span>
+          <span>Cash Services</span>
+        </a>
+        <a href="#" data-page="transactions">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 7h13l-3-3"></path>
+              <path d="M20 7l-3 3"></path>
+              <path d="M17 17H4l3 3"></path>
+              <path d="M4 17l3-3"></path>
+            </svg>
+          </span>
+          <span>Transactions</span>
+        </a>
+        <a href="#" data-page="settings">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2A1.7 1.7 0 0 0 11.7 18.2a1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2A1.7 1.7 0 0 0 8.46 10a1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.03-1.56V5h2.4v.2A1.7 1.7 0 0 0 16.16 6.8a1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15Z"></path>
+            </svg>
+          </span>
+          <span>Settings</span>
+        </a>
+        <a href="#" data-page="users">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </span>
+          <span>Users</span>
+        </a>
       </nav>
     </aside>
 
@@ -36,12 +92,54 @@
         <div class="section-header">
           <header class="top-bar">
 
-            <div class="search">
-              <input type="text" placeholder="Search..." />
-            </div>
+            <button type="button" class="sidebar-toggle topbar-sidebar-toggle" id="sidebar-toggle" aria-label="Collapse sidebar" aria-expanded="true" title="Collapse sidebar">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 6h16"></path>
+                <path d="M4 12h16"></path>
+                <path d="M4 18h16"></path>
+              </svg>
+            </button>
 
-            <div class="profile">
-              <span>JD</span>
+            <div class="search" role="search">
+              <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-4-4"></path>
+              </svg>
+              <input type="search" id="global-search" placeholder="Search transactions, booths, services..." aria-label="Search the application" autocomplete="off" />
+              <button type="button" class="search-clear" id="global-search-clear" aria-label="Clear search" hidden>&times;</button>
+              <div class="search-results" id="global-search-results" hidden></div>
+              </div>
+
+            <div class="profile-wrap">
+              <div class="profile-greeting" aria-label="Signed-in user">
+                <span>Welcome, <strong id="profile-welcome-name">Mweetwa Chinene</strong></span>
+                <small id="profile-welcome-role">System Admin</small>
+              </div>
+              <button type="button" class="profile" id="profile-toggle" aria-label="Open profile menu" aria-expanded="false" aria-controls="profile-menu">
+                <img class="profile-image" id="profile-image" src="assets/profile.jpg?v=3" alt="Mweetwa Chinene profile" />
+                <span id="profile-initials" hidden>MC</span>
+              </button>
+              <div class="profile-menu" id="profile-menu" hidden>
+                <div class="profile-menu-user">
+                  <strong id="profile-name">Mweetwa Chinene</strong>
+                  <span id="profile-role">System Administrator</span>
+                </div>
+                <button type="button" class="profile-menu-item" id="profile-users-link">
+                  <span>Manage users</span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M5 12h14"></path>
+                    <path d="m13 6 6 6-6 6"></path>
+                  </svg>
+                </button>
+                <button type="button" class="profile-menu-item profile-logout-item" id="logout-button">
+                  <span>Log out</span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M10 17l5-5-5-5"></path>
+                    <path d="M15 12H3"></path>
+                    <path d="M21 4v16"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
 
           </header>
@@ -64,23 +162,74 @@
           <div class="summary-cards">
 
             <div class="card">
-              <h3>Total Revenue</h3>
+              <div class="card-heading">
+                <h3>Total Revenue</h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20"></path>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H7"></path>
+                  </svg>
+                </span>
+              </div>
               <p id="dash-total-revenue">K0.00</p>
             </div>
 
             <div class="card">
-              <h3>Total Transactions</h3>
+              <div class="card-heading">
+                <h3>Total Transactions</h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 7h13l-3-3"></path>
+                    <path d="M20 7l-3 3"></path>
+                    <path d="M17 17H4l3 3"></path>
+                    <path d="M4 17l3-3"></path>
+                  </svg>
+                </span>
+              </div>
               <p id="dash-total-transactions">0</p>
             </div>
 
             <div class="card">
-              <h3>Credit Utilised</h3>
+              <div class="card-heading">
+                <h3>Credit Utilised</h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 3 4 7v5c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V7l-8-4Z"></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                </span>
+              </div>
               <p id="dash-credit-utilised">0%</p>
             </div>
 
             <div class="card">
-              <h3>Active Booths</h3>
+              <div class="card-heading">
+                <h3>Active Booths</h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 10h18"></path>
+                    <path d="M5 10v10h14V10"></path>
+                    <path d="M4 10 6 4h12l2 6"></path>
+                    <path d="M9 20v-6h6v6"></path>
+                  </svg>
+                </span>
+              </div>
               <p id="dash-active-booths">0</p>
+            </div>
+
+            <div class="card">
+              <div class="card-heading">
+                <h3>Total Capital Required</h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19h16"></path>
+                    <path d="M6 17V9"></path>
+                    <path d="M12 17V5"></path>
+                    <path d="M18 17v-6"></path>
+                  </svg>
+                </span>
+              </div>
+              <p id="dash-total-capital">K0.00</p>
             </div>
 
           </div>
@@ -98,7 +247,46 @@
             </div>
 
             <div class="dashboard-chart-body">
-              <div id="revenue-by-service-chart" class="simple-bar-chart"></div>
+              <div id="revenue-by-service-chart" class="dashboard-bar-chart"></div>
+            </div>
+
+          </div>
+
+          <!-- Tax Obligations -->
+          <div class="dashboard-chart-card">
+
+            <div class="dashboard-chart-header">
+              <h3>Tax Obligations</h3>
+            </div>
+
+            <div class="dashboard-chart-body">
+              <div id="tax-obligations-chart" class="dashboard-bar-chart"></div>
+            </div>
+
+          </div>
+
+          <!-- Revenue Mix by Service -->
+          <div class="dashboard-chart-card">
+
+            <div class="dashboard-chart-header">
+              <h3>Revenue Mix by Service</h3>
+            </div>
+
+            <div class="dashboard-chart-body pie-chart-body">
+              <div id="revenue-by-service-pie-chart" class="dashboard-pie-chart"></div>
+            </div>
+
+          </div>
+
+          <!-- Revenue Mix by Booth -->
+          <div class="dashboard-chart-card">
+
+            <div class="dashboard-chart-header">
+              <h3>Revenue Mix by Booth</h3>
+            </div>
+
+            <div class="dashboard-chart-body pie-chart-body">
+              <div id="revenue-by-booth-pie-chart" class="dashboard-pie-chart"></div>
             </div>
 
           </div>
@@ -112,9 +300,40 @@
             </div>
 
             <div class="dashboard-chart-body">
-              <div id="credit-utilization-chart" class="simple-bar-chart"></div>
+              <div id="credit-utilization-chart" class="dashboard-bar-chart"></div>
             </div>
 
+          </div>
+
+        </section>
+
+        <!-- Booth Performance -->
+        <section class="dashboard-service-panel">
+
+          <div class="dashboard-service-header">
+            <div>
+              <h3>Booth Performance</h3>
+              <p>Cumulative revenue and service frequency by booth location</p>
+            </div>
+          </div>
+
+          <div class="dashboard-service-table-wrapper">
+            <table class="dashboard-service-table">
+              <thead>
+                <tr>
+                  <th>Booth</th>
+                  <th>Location</th>
+                  <th>Transactions</th>
+                  <th>Revenue (ZMW)</th>
+                  <th>Service Frequency</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-booth-tbody">
+                <tr class="empty-table-row">
+                  <td colspan="5">No booths found</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
         </section>
@@ -176,10 +395,17 @@
           <!-- Cash Transaction Form -->
           <section class="cash-transaction">
 
+            <div class="cash-section-header">
+              <h3>Process Transaction</h3>
+              <p>Record a customer deposit or withdrawal</p>
+            </div>
+
+            <div class="cash-form-feedback" id="cash-form-feedback" role="alert" hidden></div>
+
             <!-- Transaction Type Selection -->
             <div class="form-group">
               <label for="transaction-type">Transaction Type</label>
-              <select name="" id="transaction-type">
+              <select id="transaction-type">
                 <option value="" selected disabled>Select Transaction Type</option>
                 <option value="deposit">Cash Deposit</option>
                 <option value="withdrawal">Cash Withdrawal</option>
@@ -189,7 +415,7 @@
             <!-- Booth Selection -->
             <div class="form-group">
               <label for="booth">Select Booth</label>
-              <select name="" id="booth">
+              <select id="booth">
                 <option value="" selected disabled>Select Booth</option>
               </select>
             </div>
@@ -203,7 +429,7 @@
             <!-- Service Selection -->
             <div class="form-group">
               <label for="service">Select Service</label>
-              <select name="" id="service" disabled>
+              <select id="service" disabled>
                 <option value="" selected>Select Service</option>
               </select>
             </div>
@@ -216,38 +442,40 @@
 
             <!-- Customer Phone Number -->
             <div class="form-group" id="phone-number-group" hidden>
-              <label for="phone-number">Phone Number</label>
+              <label for="phone-number" id="phone-number-label">Phone Number</label>
 
-              <input type="tel" id="phone-number" placeholder="Enter phone number" />
+              <input type="tel" id="phone-number" inputmode="tel" autocomplete="tel" placeholder="Enter phone number" />
             </div>
 
 
             <!-- Customer Account Number -->
             <div class="form-group" id="account-number-group" hidden>
-              <label for="account-number">Account Number</label>
+              <label for="account-number" id="account-number-label">Account Number</label>
 
-              <input type="text" id="account-number" placeholder="Enter account number" />
+              <input type="text" id="account-number" autocomplete="off" placeholder="Enter account number" />
             </div>
+
+            <p class="field-hint" id="customer-identifier-hint" hidden></p>
 
 
             <!-- Transaction Amount -->
             <div class="form-group">
               <label for="amount">Amount (ZMW)</label>
 
-              <input type="number" id="amount" min="0" step="0.01" placeholder="Enter amount" />
+              <input type="number" id="amount" min="0.01" step="0.01" inputmode="decimal" placeholder="Enter amount" />
             </div>
 
 
-            <!-- Calculated Withdrawal Fee -->
-            <div class="calculation-row" id="withdrawal-fee-row">
-              <span>Withdrawal Fee (1.5%):</span>
-              <strong id="withdrawal-fee">-</strong>
+            <!-- Calculated Transaction Tax -->
+            <div class="calculation-row" id="transaction-tax-row">
+              <span id="transaction-tax-label">Transaction Tax:</span>
+              <strong id="transaction-tax">-</strong>
             </div>
 
 
             <!-- Calculated Amount After Fee -->
             <div class="calculation-row" id="amount-after-fee-row">
-              <span>Amount After Fee:</span>
+              <span id="amount-after-fee-label">Amount After Fee:</span>
               <strong id="amount-after-fee">-</strong>
             </div>
 
@@ -355,21 +583,49 @@
         <section class="transaction-overview">
 
           <div class="transaction-overview-card">
+            <span class="overview-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 7h13l-3-3"></path>
+                <path d="M20 7l-3 3"></path>
+                <path d="M17 17H4l3 3"></path>
+                <path d="M4 17l3-3"></path>
+              </svg>
+            </span>
             <span class="overview-label">Total Transactions</span>
             <strong class="overview-value" id="overview-total-count">0</strong>
           </div>
 
           <div class="transaction-overview-card">
+            <span class="overview-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 3v14"></path>
+                <path d="m7 12 5 5 5-5"></path>
+                <path d="M5 21h14"></path>
+              </svg>
+            </span>
             <span class="overview-label">Total Deposits</span>
             <strong class="overview-value" id="overview-total-deposits">K0.00</strong>
           </div>
 
           <div class="transaction-overview-card">
+            <span class="overview-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 21V7"></path>
+                <path d="m17 12-5-5-5 5"></path>
+                <path d="M5 3h14"></path>
+              </svg>
+            </span>
             <span class="overview-label">Total Withdrawals</span>
             <strong class="overview-value" id="overview-total-withdrawals">K0.00</strong>
           </div>
 
           <div class="transaction-overview-card">
+            <span class="overview-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20"></path>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H7"></path>
+              </svg>
+            </span>
             <span class="overview-label">Total Revenue</span>
             <strong class="overview-value" id="overview-total-revenue">K0.00</strong>
           </div>
@@ -461,7 +717,6 @@
                   <th>Type</th>
                   <th>Date & Time</th>
                   <th>Booth</th>
-                  <th>Location</th>
                   <th>Service</th>
                   <th>Amount (ZMW)</th>
                   <th>Actions</th>
@@ -471,7 +726,7 @@
               <tbody id="transactions-tbody">
 
                 <tr class="empty-table-row">
-                  <td colspan="8">
+                  <td colspan="7">
                     No transactions found
                   </td>
                 </tr>
@@ -480,6 +735,12 @@
 
             </table>
 
+          </div>
+
+          <div class="transaction-pagination" id="transaction-pagination" hidden>
+            <button type="button" class="pagination-btn" id="transaction-prev">Previous</button>
+            <span class="pagination-status" id="transaction-page-status">Page 1 of 1</span>
+            <button type="button" class="pagination-btn" id="transaction-next">Next</button>
           </div>
 
         </section>
@@ -596,7 +857,7 @@
             <div class="settings-panel-header">
               <div>
                 <h3>Transaction Settings</h3>
-                <p>Configure transaction fees and processing rules</p>
+                <p>Transaction tax is applied consistently to every transaction</p>
               </div>
             </div>
 
@@ -604,11 +865,11 @@
             <div class="settings-form">
 
               <div class="settings-form-group">
-                <label for="withdrawal-fee-setting">
-                  Withdrawal Fee (%)
+                <label for="transaction-tax-setting">
+                  Transaction Tax (%)
                 </label>
 
-                <input type="number" id="withdrawal-fee-setting" value="1.5" min="0" step="0.01" />
+                <input type="number" id="transaction-tax-setting" value="16" min="16" max="16" step="0.01" readonly />
               </div>
 
 
@@ -813,7 +1074,7 @@
 
 
       <div class="receipt-status">
-        <span class="receipt-status-badge">Completed</span>
+        <span class="receipt-status-badge completed">Completed</span>
       </div>
 
 
@@ -840,6 +1101,11 @@
         </div>
 
         <div class="receipt-row">
+          <span>Booth ID</span>
+          <strong id="receipt-booth-id">-</strong>
+        </div>
+
+        <div class="receipt-row">
           <span>Location</span>
           <strong id="receipt-location">-</strong>
         </div>
@@ -849,12 +1115,17 @@
           <strong id="receipt-service">-</strong>
         </div>
 
-        <div class="receipt-row" id="receipt-phone-row" hidden>
+        <div class="receipt-row">
+          <span>Service ID</span>
+          <strong id="receipt-service-id">-</strong>
+        </div>
+
+        <div class="receipt-row" id="receipt-phone-row">
           <span>Phone Number</span>
           <strong id="receipt-phone">-</strong>
         </div>
 
-        <div class="receipt-row" id="receipt-account-row" hidden>
+        <div class="receipt-row" id="receipt-account-row">
           <span>Account Number</span>
           <strong id="receipt-account">-</strong>
         </div>
@@ -865,13 +1136,18 @@
         </div>
 
         <div class="receipt-row" id="receipt-fee-row">
-          <span>Withdrawal Fee</span>
+          <span>Transaction Tax</span>
           <strong id="receipt-fee">-</strong>
         </div>
 
         <div class="receipt-row" id="receipt-amount-after-fee-row">
-          <span>Amount After Fee</span>
+          <span>Amount After Tax</span>
           <strong id="receipt-amount-after-fee">-</strong>
+        </div>
+
+        <div class="receipt-row">
+          <span>Transaction Revenue</span>
+          <strong id="receipt-transaction-revenue">-</strong>
         </div>
 
       </div>
@@ -893,6 +1169,65 @@
           Close
         </button>
 
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Transaction Confirmation Modal -->
+  <div class="settings-modal" id="transaction-confirmation-modal" hidden>
+
+    <div class="settings-modal-backdrop"></div>
+
+    <div class="settings-modal-content" role="dialog" aria-modal="true"
+      aria-labelledby="transaction-confirmation-title">
+
+      <div class="settings-modal-header">
+
+        <div>
+          <h3 id="transaction-confirmation-title">Confirm Transaction</h3>
+          <p>Review the transaction details before processing</p>
+        </div>
+
+        <button type="button" class="settings-modal-close" aria-label="Close confirmation modal">
+          &times;
+        </button>
+
+      </div>
+
+      <div class="settings-modal-body confirmation-modal-body">
+        <div class="confirmation-summary">
+          <div class="confirmation-row">
+            <span>Transaction Type</span>
+            <strong id="confirmation-type">-</strong>
+          </div>
+          <div class="confirmation-row">
+            <span>Booth</span>
+            <strong id="confirmation-booth">-</strong>
+          </div>
+          <div class="confirmation-row">
+            <span>Service</span>
+            <strong id="confirmation-service">-</strong>
+          </div>
+          <div class="confirmation-row">
+            <span>Customer Contact</span>
+            <strong id="confirmation-customer">-</strong>
+          </div>
+          <div class="confirmation-row">
+            <span>Transaction Tax</span>
+            <strong id="confirmation-fee">-</strong>
+          </div>
+          <div class="confirmation-row confirmation-total">
+            <span>Amount</span>
+            <strong id="confirmation-amount">-</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-modal-footer">
+        <button type="button" class="settings-modal-cancel">Cancel</button>
+        <button type="button" class="settings-modal-save" id="confirm-transaction">Confirm Transaction</button>
       </div>
 
     </div>
@@ -1292,9 +1627,71 @@
   </div>
 
 
+  <!-- Reusable CRUD Confirmation Modal -->
+  <div class="settings-modal" id="crud-confirmation-modal" hidden>
+
+    <div class="settings-modal-backdrop"></div>
+
+    <div class="settings-modal-content" role="dialog" aria-modal="true"
+      aria-labelledby="crud-confirmation-title">
+
+      <div class="settings-modal-header">
+        <div>
+          <h3 id="crud-confirmation-title">Confirm Action</h3>
+          <p id="crud-confirmation-subtitle">Please review this action.</p>
+        </div>
+        <button type="button" class="settings-modal-close" aria-label="Close confirmation modal">
+          &times;
+        </button>
+      </div>
+
+      <div class="settings-modal-body crud-confirmation-body">
+        <p id="crud-confirmation-message"></p>
+      </div>
+
+      <div class="settings-modal-footer">
+        <button type="button" class="settings-modal-cancel">Cancel</button>
+        <button type="button" class="settings-modal-save" id="confirm-crud-action">Confirm</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Reusable CRUD Success Modal -->
+  <div class="settings-modal" id="crud-success-modal" hidden>
+
+    <div class="settings-modal-backdrop"></div>
+
+    <div class="settings-modal-content" role="dialog" aria-modal="true" aria-labelledby="crud-success-title">
+
+      <div class="settings-modal-header">
+        <div>
+          <h3 id="crud-success-title">Success</h3>
+          <p>Operation completed successfully</p>
+        </div>
+        <button type="button" class="settings-modal-close" aria-label="Close success modal">
+          &times;
+        </button>
+      </div>
+
+      <div class="settings-modal-body crud-success-body">
+        <div class="crud-success-icon" aria-hidden="true">✓</div>
+        <p id="crud-success-message"></p>
+      </div>
+
+      <div class="settings-modal-footer">
+        <button type="button" class="settings-modal-save settings-modal-close">Done</button>
+      </div>
+
+    </div>
+
+  </div>
 
 
-  <script src="./js/app.js"></script>
+
+
+  <script type="module" src="./js/app.js?v=5"></script>
 
 </body>
 

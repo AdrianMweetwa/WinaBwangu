@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sign in to Wina Bwangu" />
+    <title>Sign in | Wina Bwangu</title>
+    <link rel="stylesheet" href="./css/modules/login.css?v=12" />
+  </head>
+  <body class="login-page">
+    <main class="login-shell">
+      <section class="login-visual" aria-label="Wina Bwangu introduction">
+        <div class="login-visual-overlay"></div>
+        <div class="login-branding">
+          <h1>Move money<br /><span>with confidence.</span></h1>
+          <p class="login-visual-copy">
+            Manage booths, services, and transactions from one clear workspace.
+          </p>
+        </div>
+      </section>
+
+      <section class="login-panel" aria-labelledby="login-title">
+        <div class="login-card">
+          <div class="login-heading login-primary-heading">
+            <h2 id="login-title">Welcome to Wina Bwangu</h2>
+            <p>Sign in to access your dashboard.</p>
+          </div>
+
+          <form class="login-form login-primary-form" id="login-form" novalidate>
+            <div class="login-field floating-field">
+              <input id="login-identifier" name="identifier" type="text" autocomplete="username" placeholder=" " required />
+              <label for="login-identifier">Username or email</label>
+            </div>
+
+            <div class="login-field floating-field">
+              <div class="login-password-wrap">
+                <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder=" " required />
+                <label for="login-password">Password</label>
+                <button type="button" class="login-password-toggle" id="login-password-toggle" aria-label="Show password" aria-pressed="false">
+                  <span aria-hidden="true">Show</span>
+                </button>
+              </div>
+              <div class="login-forgot-row">
+                <a class="login-help-link" href="/forgot-password">Forgot password?</a>
+              </div>
+            </div>
+
+            <label class="login-remember">
+              <input type="checkbox" name="remember" />
+              <span>Remember me on this device</span>
+            </label>
+
+            <button class="login-submit" type="submit">Sign in</button>
+          </form>
+
+          <div class="login-demo-credentials">
+            <strong>Test Credentials:</strong>
+            <span>Username: admin | admin_agent | agent</span>
+            <span>Email: admin@gmail.com | admin_agent@gmail.com | agent@gmail.com</span>
+            <span>Password: password123</span>
+          </div>
+
+          <p class="login-feedback" id="login-feedback" role="status" aria-live="polite" hidden></p>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./js/login.js?v=4"></script>
+  </body>
+</html>

@@ -1,6 +1,15 @@
 const express = require("express"); // Import the Express library to create a web server
 
 const db = require("../db"); // Import the database connection object from db.js
+const {
+  isFiniteNumber,
+  isNonEmptyString,
+  isPositiveInteger,
+  isValidDateString,
+  VALID_TRANSACTION_TYPES,
+} = require("../utils/validation");
+const { hasAssignedAccess, isSystemAdmin, requireCapability } = require("../middleware/auth");
+const { calculateTransactionAmounts } = require("../utils/transaction-rules");
 
 const router = express.Router(); // Create a new router object to handle routes related to transactions
 
@@ -10,12 +19,24 @@ const router = express.Router(); // Create a new router object to handle routes 
 // The SQL query uses INNER JOINs to combine data from the transactions, booths, and services tables based on their respective IDs
 // The results are ordered by the transaction ID in descending order, so the most recent transactions appear first
 
-router.get("/", (req, res) => {
+router.get("/", requireCapability("transactions.view"), (req, res) => {
+  const filters = [];
+  const parameters = [];
+  if (!isSystemAdmin(req.user)) {
+    const booths = String(req.user.assigned_booths || "").split(",").filter(Boolean);
+    const services = String(req.user.assigned_services || "").split(",").filter(Boolean);
+    if (booths.length === 0 || services.length === 0) return res.json([]);
+    filters.push(`booths.booth IN (${booths.map(() => "?").join(",")})`);
+    parameters.push(...booths);
+    filters.push(`services.service IN (${services.map(() => "?").join(",")})`);
+    parameters.push(...services);
+  }
+  const where = filters.length ? `WHERE ${filters.join(" AND ")}` : "";
   const transactions = db
     .prepare(
-      "SELECT * FROM transactions INNER JOIN booths ON transactions.booth_id = booths.id INNER JOIN services ON transactions.service_id = services.id ORDER BY transactions.id DESC",
+      `SELECT * FROM transactions INNER JOIN booths ON transactions.booth_id = booths.id INNER JOIN services ON transactions.service_id = services.id ${where} ORDER BY transactions.id DESC`,
     )
-    .all(); // Retrieve all transactions from the database
+    .all(...parameters); // Retrieve only transactions within the signed-in user's scope
 
   res.json(transactions); // Send a JSON response containing the list of transactions
 });
@@ -23,7 +44,7 @@ router.get("/", (req, res) => {
 // Define a route to handle POST requests to the root URL ("/")
 // This route adds a new transaction to the database
 
-router.post("/", (req, res) => {
+router.post("/", requireCapability("transactions.create"), (req, res) => {
   const {
     transaction_id,
     transaction_type,
@@ -32,29 +53,25 @@ router.post("/", (req, res) => {
     transaction_amount,
     phone_number,
     account_number,
-    transaction_tax,
-    transaction_amount_after_tax,
-    transaction_revenue,
     transaction_date,
   } = req.body; // Extract the required fields from the request body
 
   // Check that all required fields were provided
 
+  if (!isNonEmptyString(transaction_id, 50) || !VALID_TRANSACTION_TYPES.includes(transaction_type)) {
+    return res.status(400).json({ error: "transaction_id and transaction_type must be valid" });
+  }
+  if (!isPositiveInteger(booth_id) || !isPositiveInteger(service_id)) {
+    return res.status(400).json({ error: "A valid booth and service are required" });
+  }
   if (
-    !transaction_id ||
-    !transaction_type ||
-    transaction_amount === undefined ||
-    phone_number === undefined ||
-    account_number === undefined ||
-    transaction_tax === undefined ||
-    transaction_amount_after_tax === undefined ||
-    transaction_revenue === undefined ||
-    !booth_id ||
-    !service_id ||
-    !transaction_date
+    !isFiniteNumber(transaction_amount, { min: Number.EPSILON }) ||
+    !isValidDateString(transaction_date) ||
+    typeof phone_number !== "string" ||
+    typeof account_number !== "string"
   ) {
     return res.status(400).json({
-      error: "All transaction fields are required",
+      error: "Transaction amounts, date and customer contact fields must be valid",
     });
   }
 
@@ -80,6 +97,19 @@ router.post("/", (req, res) => {
     });
   }
 
+  if (!hasAssignedAccess(req.user, booth.booth, service.service)) {
+    return res.status(403).json({ error: "You do not have access to this booth and service" });
+  }
+
+  const serviceAtBooth = db
+    .prepare("SELECT 1 FROM booth_services WHERE booth_id = ? AND service_id = ?")
+    .get(booth_id, service_id);
+  if (!serviceAtBooth) {
+    return res.status(400).json({ error: "The selected service is not available at this booth" });
+  }
+
+  const calculated = calculateTransactionAmounts(transaction_amount, service.revenue_rate);
+
   try {
     // Insert the transaction into the database
 
@@ -95,9 +125,9 @@ router.post("/", (req, res) => {
         transaction_amount,
         phone_number,
         account_number,
-        transaction_tax,
-        transaction_amount_after_tax,
-        transaction_revenue,
+        calculated.tax,
+        calculated.amountAfterTax,
+        calculated.revenue,
         transaction_date,
       );
 
@@ -106,6 +136,7 @@ router.post("/", (req, res) => {
     res.status(201).json({
       message: "Transaction added successfully",
       id: result.lastInsertRowid,
+      calculation: calculated,
     });
   } catch (error) {
     // Handle duplicate transaction ID
