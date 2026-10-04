@@ -43,6 +43,6 @@ This test plan records the checks carried out by our group to verify the applica
 
 We run `npm test` as part of our final verification. The suite verifies password hashing, shared validation, role capabilities, the 308 sequential transaction references and the server-side 16% monetary calculation. A clean run is required before submission.
 
-## Known case-study ambiguity
+## Confirmed assignment dataset
 
-The supplied case-study materials mention both a 308-row combined transaction dataset and a statement to populate 170 transactions. Our implementation preserves the complete Appendix 1 dataset of 308 sequential references and documents the conflict here so the lecturer can confirm which number should be assessed. Our seeded application data is reproducible and auditable.
+Our group is using the confirmed Appendix 1 dataset of 308 sequential transactions, with references from `WB0000001` through `WB0000308`. The seeded application data is reproducible and auditable. Run `npm run seed` before the final demonstration to restore this exact dataset.
