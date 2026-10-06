@@ -5,11 +5,9 @@ const path = require('path');
 // import Node.js fs module to handle file system operations
 const fs = require("fs");
 
-//Build the absolute path to the database file using the path module
-// The database file is located in the "database" directory, one level up from the current directory
-// The __dirname variable represents the directory of the current module (server.js)
-// The path.join() method is used to concatenate the directory names and create a valid file path for the database file
-const databasePath = path.join(__dirname, "..", "database", 'winabwangu.db');
+// Build the absolute path to the database file.
+// Render can mount a persistent disk at /data, while local development still works with the repo database folder.
+const databasePath = process.env.DATABASE_PATH || path.join(__dirname, "..", "database", 'winabwangu.db');
 
 // Open the Winabwangu database using the better-sqlite3 library
 // SQLite will create the database file if it does not exist, and it will be opened in read/write mode 

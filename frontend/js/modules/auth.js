@@ -8,8 +8,20 @@ export const rolePermissions = {
 };
 
 export const roleCapabilities = {
-  system_admin: ["catalog.view", "settings.view", "settings.write", "transactions.view", "transactions.create", "users.manage"],
-  admin_agent: ["catalog.view", "settings.view", "transactions.view", "transactions.create"],
+  system_admin: [
+    "catalog.view",
+    "settings.view",
+    "settings.write",
+    "transactions.view",
+    "transactions.create",
+    "users.manage",
+  ],
+  admin_agent: [
+    "catalog.view",
+    "settings.view",
+    "transactions.view",
+    "transactions.create",
+  ],
   agent: ["catalog.view", "transactions.view", "transactions.create"],
 };
 

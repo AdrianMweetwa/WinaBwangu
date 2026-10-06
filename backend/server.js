@@ -11,7 +11,7 @@ const { requireAuth, requireCapability } = require("./middleware/auth");
 const { getCookie, getUserForSession } = require("./auth/session");
 
 const app = express(); // Create an instance of the Express application
-const PORT = 3000; // Define the port number on which the server will listen for incoming requests (matches README)
+const PORT = process.env.PORT || 3000; // Render provides PORT at runtime; fallback keeps local development working
 
 app.use(express.json()); // Middleware to parse incoming JSON requests
 app.use("/api/auth", authRouter);
