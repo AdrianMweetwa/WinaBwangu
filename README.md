@@ -6,8 +6,10 @@ WinaBwangu is our group web application for managing booths, financial services,
 
 - Node.js
 - Express.js
-- SQLite
+- SQLite for local development
+- PostgreSQL for hosted deployment
 - better-sqlite3
+- pg
 - HTML
 - CSS
 - JavaScript
@@ -20,7 +22,7 @@ Install the following before running the project:
 - npm
 - Git
 
-The project uses SQLite through `better-sqlite3`; no separate database server is required.
+The project runs with SQLite locally by default. For Render or other hosted environments, it also supports PostgreSQL via `DATABASE_URL`, which is the recommended option when the hosting plan does not provide a persistent disk.
 
 ## Clone the Project
 
@@ -37,11 +39,29 @@ npm install
 
 ## Set Up or Reset the Database
 
+Local development still uses SQLite unless `DATABASE_URL` is set:
+
 ```powershell
 npm run seed
 ```
 
 The seed command creates the SQLite database, loads the six booths and five services, creates the three demo users, and loads the 308 Appendix 1 transactions. It replaces existing transaction rows, so run it when a clean assignment dataset is required.
+
+## Render / Hosted Deployment
+
+The server is already configured to use the runtime port provided by the host:
+
+```text
+PORT=3000
+```
+
+For PostgreSQL deployments, set:
+
+```text
+DATABASE_URL=postgresql://user:password@host:5432/database_name
+```
+
+This is the recommended configuration for Render free/cheap plans because SQLite is file-based and needs a persistent disk. If a persistent disk is unavailable, use PostgreSQL instead.
 
 ## Start the Application
 

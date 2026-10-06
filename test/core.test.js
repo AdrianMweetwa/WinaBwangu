@@ -14,6 +14,26 @@ const {
   VALID_TRANSACTION_TYPES,
 } = require("../backend/utils/validation");
 const { requireCapability } = require("../backend/middleware/auth");
+const db = require("../backend/db");
+
+test("database compatibility layer converts SQLite statements to PostgreSQL-safe SQL", () => {
+  assert.equal(typeof db.prepare, "function");
+
+  const normalized = db.__internal.normalizeSqlForPostgres(
+    "INSERT OR IGNORE INTO users (username, email) VALUES (?, ?)",
+  );
+
+  assert.match(
+    normalized,
+    /INSERT INTO users \(username, email\) VALUES \(\$1, \$2\) ON CONFLICT DO NOTHING/i,
+  );
+  assert.match(
+    db.__internal.normalizeSqlForPostgres(
+      "DELETE FROM auth_sessions WHERE expires_at <= datetime('now')",
+    ),
+    /CURRENT_TIMESTAMP/i,
+  );
+});
 
 test("password hashes verify correctly without exposing the original password", () => {
   const password = "password123";

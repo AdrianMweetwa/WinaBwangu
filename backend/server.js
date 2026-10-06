@@ -18,7 +18,12 @@ app.use("/api/auth", authRouter);
 app.use("/api/booths", requireAuth, boothsRouter); // Use the booths router for routes related to booths
 app.use("/api/services", requireAuth, servicesRouter); // Use the services router for routes related to services
 app.use("/api/transactions", requireAuth, transactionsRouter); // Use the transactions router for routes related to transactions
-app.use("/api/users", requireAuth, requireCapability("users.manage"), usersRouter); // User administration is system-admin only
+app.use(
+  "/api/users",
+  requireAuth,
+  requireCapability("users.manage"),
+  usersRouter,
+); // User administration is system-admin only
 
 function serveDashboard(req, res) {
   const user = getUserForSession(getCookie(req, "wb_session"));
@@ -30,7 +35,9 @@ function serveDashboard(req, res) {
 
 app.get("/", serveDashboard);
 app.get("/index.html", serveDashboard);
-app.use(express.static(path.join(__dirname, "..", "frontend"), { index: false })); // Serve authenticated app assets
+app.use(
+  express.static(path.join(__dirname, "..", "frontend"), { index: false }),
+); // Serve authenticated app assets
 
 app.get("/login", (req, res) => {
   res.sendFile("login.html", {
