@@ -1,3 +1,5 @@
+const fs = require("node:fs");
+const path = require("node:path");
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
@@ -54,4 +56,19 @@ test("role capabilities block unauthorized management actions", () => {
   assert.equal(can("agent", "settings.view"), false);
   assert.equal(can("agent", "transactions.create"), true);
   assert.equal(can("agent", "users.manage"), false);
+});
+
+test("global search dropdown stays above the app header", () => {
+  const css = fs.readFileSync(path.join(__dirname, "../frontend/css/modules/layout.css"), "utf8");
+
+  assert.match(css, /\.search\s*\{[^}]*z-index:\s*30;/s);
+  assert.match(css, /\.search-results\s*\{[^}]*z-index:\s*40;/s);
+});
+
+test("cash services page is restricted to the agent role", () => {
+  const authJs = fs.readFileSync(path.join(__dirname, "../frontend/js/modules/auth.js"), "utf8");
+
+  assert.match(authJs, /agent:\s*\[\s*"dashboard",\s*"cash-services",\s*"transactions"\s*\]/);
+  assert.doesNotMatch(authJs, /system_admin:\s*\[[^\]]*"cash-services"[^\]]*\]/);
+  assert.doesNotMatch(authJs, /admin_agent:\s*\[[^\]]*"cash-services"[^\]]*\]/);
 });

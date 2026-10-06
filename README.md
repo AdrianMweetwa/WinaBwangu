@@ -139,8 +139,5 @@ npm start         # Start the Express server
 
 Press `Ctrl+C` in the terminal to stop the server.
 
-## Author
-
-**Group submission - add all group member names before submission**
 
 GitHub: https://github.com/AdrianMweetwa/WinaBwangu

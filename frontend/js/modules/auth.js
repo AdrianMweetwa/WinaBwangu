@@ -2,8 +2,8 @@ import { api } from "./api.js";
 import { state } from "./state.js";
 
 export const rolePermissions = {
-  system_admin: ["dashboard", "cash-services", "transactions", "settings", "users"],
-  admin_agent: ["dashboard", "cash-services", "transactions", "settings"],
+  system_admin: ["dashboard", "transactions", "settings", "users"],
+  admin_agent: ["dashboard", "transactions", "settings"],
   agent: ["dashboard", "cash-services", "transactions"],
 };
 

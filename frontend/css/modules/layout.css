@@ -239,6 +239,7 @@ main {
 .search {
   position: absolute;
   left: 50%;
+  z-index: 30;
   transform: translateX(-50%);
 
   width: 400px;
@@ -320,7 +321,7 @@ main {
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  z-index: 20;
+  z-index: 40;
 
   max-height: 360px;
   overflow-y: auto;
