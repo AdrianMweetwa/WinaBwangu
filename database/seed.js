@@ -1,7 +1,9 @@
 // We seed the case-study reference data for our Wina Bwangu project.
 const db = require("../backend/db");
 const { hashPassword } = require("../backend/utils/password");
-const { calculateTransactionAmounts } = require("../backend/utils/transaction-rules");
+const {
+  calculateTransactionAmounts,
+} = require("../backend/utils/transaction-rules");
 
 const booths = [
   ["Wina1", "Lusaka CPD"],
@@ -47,7 +49,9 @@ for (const service of services) {
 }
 
 const findBooth = db.prepare("SELECT id FROM booths WHERE booth = ?");
-const findService = db.prepare("SELECT id, revenue_rate FROM services WHERE service = ?");
+const findService = db.prepare(
+  "SELECT id, revenue_rate FROM services WHERE service = ?",
+);
 const insertBoothService = db.prepare(
   "INSERT OR IGNORE INTO booth_services (booth_id, service_id) VALUES (?, ?)",
 );
@@ -88,15 +92,30 @@ const seedTransactions = db.transaction(() => {
     const booth = findBooth.get(transaction.booth_code);
     const service = findService.get(transaction.service_name);
     if (!booth || !service) {
-      throw new Error(`Appendix row ${transaction.transaction_id} references missing booth/service`);
+      throw new Error(
+        `Appendix row ${transaction.transaction_id} references missing booth/service`,
+      );
     }
-    if (Math.abs(Number(service.revenue_rate) - transaction.revenue_rate) > 0.000001) {
-      throw new Error(`Revenue rate mismatch for ${transaction.transaction_id} (${transaction.service_name})`);
+    if (
+      Math.abs(Number(service.revenue_rate) - transaction.revenue_rate) >
+      0.000001
+    ) {
+      throw new Error(
+        `Revenue rate mismatch for ${transaction.transaction_id} (${transaction.service_name})`,
+      );
     }
-    if (transaction.transaction_id !== expectedTransactionId(Number(transaction.transaction_id.slice(2)))) {
-      throw new Error(`Invalid transaction reference ${transaction.transaction_id}`);
+    if (
+      transaction.transaction_id !==
+      expectedTransactionId(Number(transaction.transaction_id.slice(2)))
+    ) {
+      throw new Error(
+        `Invalid transaction reference ${transaction.transaction_id}`,
+      );
     }
-    if (transaction.booth_id !== booth.id || transaction.service_id !== service.id) {
+    if (
+      transaction.booth_id !== booth.id ||
+      transaction.service_id !== service.id
+    ) {
       throw new Error(`Foreign-key mismatch for ${transaction.transaction_id}`);
     }
     const calculated = calculateTransactionAmounts(
@@ -129,7 +148,16 @@ const insertUser = db.prepare(`
 `);
 const demoPasswordHash = hashPassword("password123");
 
-insertUser.run("admin", "Mweetwa Chinene", "admin@gmail.com", demoPasswordHash, "system_admin", null, "", "");
+insertUser.run(
+  "admin",
+  "Mweetwa Chinene",
+  "admin@gmail.com",
+  demoPasswordHash,
+  "system_admin",
+  null,
+  "",
+  "",
+);
 insertUser.run(
   "admin_agent",
   "Mweetwa Chinene",
@@ -151,4 +179,9 @@ insertUser.run(
   "Airtel Money,MTN Money,Zamtel Money",
 );
 
-console.log(`Database seeded successfully with ${appendixTransactions.length} Appendix 1 transactions.`);
+console.log(
+  `Database seeded successfully with ${appendixTransactions.length} Appendix 1 transactions.`,
+);
+if (typeof db.close === "function") {
+  db.close();
+}

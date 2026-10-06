@@ -103,6 +103,47 @@ function createPostgresDb() {
     })();
   }
 
+  function ensurePostgresSchema() {
+    const schemaPath = path.join(__dirname, "..", "database", "schema.sql");
+    const schema = fs.readFileSync(schemaPath, "utf8");
+    const statements = schema
+      .split(/;\s*\n+/)
+      .map((statement) => statement.trim())
+      .filter(Boolean);
+
+    for (const statement of statements) {
+      executeQuery(statement);
+    }
+
+    const migrations = [
+      ["services", "identifier_type", "TEXT NOT NULL DEFAULT 'phone'"],
+      ["transactions", "phone_number", "TEXT NOT NULL DEFAULT ''"],
+      ["transactions", "account_number", "TEXT NOT NULL DEFAULT ''"],
+    ];
+
+    for (const [table, column, definition] of migrations) {
+      const result = executeQuery(
+        `SELECT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = $1 AND column_name = $2
+        ) AS exists;`,
+        [table, column],
+      );
+
+      if (!result.rows?.[0]?.exists) {
+        executeQuery(
+          `ALTER TABLE ${table} ADD COLUMN ${column} ${definition};`,
+        );
+      }
+    }
+
+    executeQuery(
+      "UPDATE services SET identifier_type = 'account' WHERE service IN ('Zanaco', 'FNB') AND identifier_type = 'phone'",
+    );
+  }
+
+  ensurePostgresSchema();
+
   const db = {
     prepare(sql) {
       const normalized = normalizeSqlForPostgres(sql);
