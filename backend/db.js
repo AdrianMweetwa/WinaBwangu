@@ -3,6 +3,7 @@ const { Pool } = require("pg");
 const deasync = require("deasync");
 const path = require("path");
 const fs = require("fs");
+const { hashPassword } = require("./utils/password");
 
 const databasePath =
   process.env.DATABASE_PATH ||
@@ -206,11 +207,85 @@ function createPostgresDb() {
   return db;
 }
 
+function ensureDemoUsers() {
+  const existingUsernames = new Set(
+    db
+      .prepare("SELECT username FROM users")
+      .all()
+      .map(({ username }) => username.toLowerCase()),
+  );
+  const demoUsers = [
+    [
+      "admin",
+      "Mweetwa Chinene",
+      "admin@gmail.com",
+      "system_admin",
+      null,
+      "",
+      "",
+    ],
+    [
+      "admin_agent",
+      "Mweetwa Chinene",
+      "admin_agent@gmail.com",
+      "admin_agent",
+      "Wina Bwangu",
+      "Wina1,Wina2,Wina3",
+      "Airtel Money,MTN Money,Zamtel Money,Zanaco,FNB",
+    ],
+    [
+      "agent",
+      "Mweetwa Chinene",
+      "agent@gmail.com",
+      "agent",
+      "Wina Bwangu",
+      "Wina4",
+      "Airtel Money,MTN Money,Zamtel Money",
+    ],
+  ];
+  const missingUsers = demoUsers.filter(
+    ([username]) => !existingUsernames.has(username.toLowerCase()),
+  );
+  if (missingUsers.length === 0) return;
+
+  const insertUser = db.prepare(`
+    INSERT INTO users
+      (username, full_name, email, password_hash, role, company, assigned_booths, assigned_services, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active')
+    ON CONFLICT (username) DO NOTHING
+  `);
+  const passwordHash = hashPassword("password123");
+
+  for (const [
+    username,
+    fullName,
+    email,
+    role,
+    company,
+    booths,
+    services,
+  ] of missingUsers) {
+    insertUser.run(
+      username,
+      fullName,
+      email,
+      passwordHash,
+      role,
+      company,
+      booths,
+      services,
+    );
+  }
+}
+
 const isPostgresEnabled = Boolean(process.env.DATABASE_URL);
 const db = isPostgresEnabled ? createPostgresDb() : createSqliteDb();
+ensureDemoUsers();
 
 db.__internal = {
   normalizeSqlForPostgres,
 };
+
+db.ensureDemoUsers = ensureDemoUsers;
 
 module.exports = db;

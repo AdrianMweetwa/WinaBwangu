@@ -44,6 +44,27 @@ test("password hashes verify correctly without exposing the original password", 
   assert.equal(verifyPassword("incorrect-password", hash), false);
 });
 
+test("startup guarantees the documented demo users are available", () => {
+  const { ensureDemoUsers } = require("../backend/db");
+  ensureDemoUsers();
+
+  const users = db
+    .prepare(
+      "SELECT username, status FROM users WHERE username IN ('admin', 'admin_agent', 'agent')",
+    )
+    .all();
+  assert.deepEqual(
+    users
+      .map(({ username, status }) => ({ username, status }))
+      .sort((a, b) => a.username.localeCompare(b.username)),
+    [
+      { username: "admin", status: "active" },
+      { username: "admin_agent", status: "active" },
+      { username: "agent", status: "active" },
+    ],
+  );
+});
+
 test("shared validation accepts valid values and rejects invalid values", () => {
   assert.equal(isNonEmptyString("Wina1", 50), true);
   assert.equal(isNonEmptyString("", 50), false);
