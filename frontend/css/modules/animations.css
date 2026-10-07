@@ -319,19 +319,6 @@ tbody tr:nth-child(5) { animation-delay: 120ms; }
 .proper-bar-chart .bar-chart-column:nth-child(4) { animation-delay: 165ms; }
 .proper-bar-chart .bar-chart-column:nth-child(5) { animation-delay: 220ms; }
 
-.crud-success-body::before {
-  display: grid;
-  width: 44px;
-  height: 44px;
-  margin: 0 auto 12px;
-  content: "✓";
-  place-items: center;
-  color: #ffffff;
-  background: #198754;
-  border-radius: 50%;
-  animation: pulse-ring 1.4s ease-out 1;
-}
-
 /* Keep animation optional for users who request less motion. */
 @media (prefers-reduced-motion: reduce) {
   *,

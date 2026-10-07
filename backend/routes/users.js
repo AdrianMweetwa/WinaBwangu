@@ -84,12 +84,10 @@ router.post("/", (req, res) => {
         status === "inactive" ? "inactive" : "active",
       );
 
-    res
-      .status(201)
-      .json({
-        message: "User created successfully",
-        id: result.lastInsertRowid,
-      });
+    res.status(201).json({
+      message: "User created successfully",
+      id: result.lastInsertRowid,
+    });
   } catch (error) {
     if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
       return res
@@ -168,13 +166,18 @@ router.put("/:id", (req, res) => {
       req.params.id,
     );
 
-    if (
-      role !== undefined ||
-      assigned_booths !== undefined ||
-      assigned_services !== undefined ||
-      status !== undefined ||
-      password !== undefined
-    ) {
+    const accessSensitiveFields = [
+      "role",
+      "assigned_booths",
+      "assigned_services",
+      "status",
+      "password",
+    ];
+    const shouldInvalidateSessions = accessSensitiveFields.some((field) =>
+      Object.prototype.hasOwnProperty.call(req.body, field),
+    );
+
+    if (shouldInvalidateSessions) {
       invalidateUserSessions(req.params.id);
     }
 
