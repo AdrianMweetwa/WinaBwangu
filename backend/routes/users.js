@@ -1,5 +1,6 @@
 const express = require("express");
 const db = require("../db");
+const { invalidateUserSessions } = require("../auth/session");
 const { hashPassword } = require("../utils/password");
 const {
   isNonEmptyString,
@@ -83,10 +84,17 @@ router.post("/", (req, res) => {
         status === "inactive" ? "inactive" : "active",
       );
 
-    res.status(201).json({ message: "User created successfully", id: result.lastInsertRowid });
+    res
+      .status(201)
+      .json({
+        message: "User created successfully",
+        id: result.lastInsertRowid,
+      });
   } catch (error) {
     if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
-      return res.status(400).json({ error: "Username or email already exists" });
+      return res
+        .status(400)
+        .json({ error: "Username or email already exists" });
     }
     console.error("User create error:", error);
     res.status(500).json({ error: error.message });
@@ -94,7 +102,9 @@ router.post("/", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-  const existing = db.prepare("SELECT * FROM users WHERE id = ?").get(req.params.id);
+  const existing = db
+    .prepare("SELECT * FROM users WHERE id = ?")
+    .get(req.params.id);
   if (!existing) {
     return res.status(404).json({ error: "User not found" });
   }
@@ -120,8 +130,13 @@ router.put("/:id", (req, res) => {
   if (email !== undefined && !isValidEmail(email)) {
     return res.status(400).json({ error: "Invalid email" });
   }
-  if (password !== undefined && (typeof password !== "string" || password.length < 8)) {
-    return res.status(400).json({ error: "Password must be at least 8 characters" });
+  if (
+    password !== undefined &&
+    (typeof password !== "string" || password.length < 8)
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Password must be at least 8 characters" });
   }
   if (role !== undefined && !VALID_ROLES.includes(role)) {
     return res.status(400).json({ error: "Invalid role" });
@@ -143,16 +158,32 @@ router.put("/:id", (req, res) => {
       password ? hashPassword(password) : existing.password_hash,
       role || existing.role,
       company !== undefined ? company : existing.company,
-      Array.isArray(assigned_booths) ? assigned_booths.join(",") : existing.assigned_booths,
-      Array.isArray(assigned_services) ? assigned_services.join(",") : existing.assigned_services,
+      Array.isArray(assigned_booths)
+        ? assigned_booths.join(",")
+        : existing.assigned_booths,
+      Array.isArray(assigned_services)
+        ? assigned_services.join(",")
+        : existing.assigned_services,
       status || existing.status,
       req.params.id,
     );
 
+    if (
+      role !== undefined ||
+      assigned_booths !== undefined ||
+      assigned_services !== undefined ||
+      status !== undefined ||
+      password !== undefined
+    ) {
+      invalidateUserSessions(req.params.id);
+    }
+
     res.json({ message: "User updated successfully" });
   } catch (error) {
     if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
-      return res.status(400).json({ error: "Username or email already exists" });
+      return res
+        .status(400)
+        .json({ error: "Username or email already exists" });
     }
     console.error("User update error:", error);
     res.status(500).json({ error: error.message });
@@ -160,10 +191,13 @@ router.put("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  const result = db.prepare("DELETE FROM users WHERE id = ?").run(req.params.id);
+  const result = db
+    .prepare("DELETE FROM users WHERE id = ?")
+    .run(req.params.id);
   if (result.changes === 0) {
     return res.status(404).json({ error: "User not found" });
   }
+  invalidateUserSessions(req.params.id);
   res.json({ message: "User deleted successfully" });
 });
 
