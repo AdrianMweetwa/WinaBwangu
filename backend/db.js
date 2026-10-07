@@ -73,6 +73,15 @@ function createSqliteDb() {
   }
 
   db.prepare(
+    `INSERT OR IGNORE INTO booth_services (booth_id, service_id)
+     SELECT b.id, s.id
+     FROM booths b
+     JOIN services s
+       ON s.service IN ('Zanaco', 'FNB')
+     WHERE b.booth = 'Wina4'`,
+  ).run();
+
+  db.prepare(
     "UPDATE services SET identifier_type = 'account' WHERE service IN ('Zanaco', 'FNB') AND identifier_type = 'phone'",
   ).run();
 

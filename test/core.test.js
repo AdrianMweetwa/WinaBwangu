@@ -151,3 +151,25 @@ test("common service-name typos still match canonical access entries", () => {
   assert.equal(hasAssignedAccess(user, "Wina5", "FNB"), true);
   assert.equal(hasAssignedAccess(user, "Wina4", "Zanaco"), false);
 });
+
+test("agent assignments include the services available at Wina4", () => {
+  const boothServices = db
+    .prepare(
+      `SELECT s.service
+       FROM booth_services bs
+       JOIN booths b ON b.id = bs.booth_id
+       JOIN services s ON s.id = bs.service_id
+       WHERE b.booth = ?
+       ORDER BY s.id`,
+    )
+    .all("Wina4")
+    .map(({ service }) => service);
+
+  assert.deepEqual(boothServices, [
+    "Airtel Money",
+    "MTN Money",
+    "Zamtel Money",
+    "Zanaco",
+    "FNB",
+  ]);
+});

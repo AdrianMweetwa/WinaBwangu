@@ -26,7 +26,7 @@ const boothServices = [
   ["Wina1", "Airtel Money", "MTN Money", "Zamtel Money", "Zanaco", "FNB"],
   ["Wina2", "Airtel Money", "MTN Money", "Zamtel Money", "FNB"],
   ["Wina3", "Airtel Money", "MTN Money", "Zamtel Money", "Zanaco", "FNB"],
-  ["Wina4", "Airtel Money", "MTN Money", "Zamtel Money"],
+  ["Wina4", "Airtel Money", "MTN Money", "Zamtel Money", "Zanaco", "FNB"],
   ["Wina5", "Airtel Money", "MTN Money", "Zanaco", "FNB"],
   ["Wina6", "Airtel Money", "MTN Money", "Zamtel Money"],
 ];
