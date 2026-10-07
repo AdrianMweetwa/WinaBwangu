@@ -139,3 +139,15 @@ test("cash services page is restricted to the agent role", () => {
   );
   assert.doesNotMatch(authJs, /admin_agent:\s*\[[^\]]*"cash-services"[^\]]*\]/);
 });
+
+test("common service-name typos still match canonical access entries", () => {
+  const { hasAssignedAccess } = require("../backend/middleware/auth");
+  const user = {
+    assigned_booths: "Wina5",
+    assigned_services: "Zannaco,FNB",
+  };
+
+  assert.equal(hasAssignedAccess(user, "Wina5", "Zanaco"), true);
+  assert.equal(hasAssignedAccess(user, "Wina5", "FNB"), true);
+  assert.equal(hasAssignedAccess(user, "Wina4", "Zanaco"), false);
+});

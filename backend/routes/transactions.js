@@ -32,9 +32,12 @@ router.get("/", requireCapability("transactions.view"), (req, res) => {
   if (!isSystemAdmin(req.user)) {
     const booths = String(req.user.assigned_booths || "")
       .split(",")
+      .map((value) => String(value).trim())
       .filter(Boolean);
     const services = String(req.user.assigned_services || "")
       .split(",")
+      .map((value) => String(value).trim())
+      .map((value) => value.replace(/\bZannaco\b/gi, "Zanaco"))
       .filter(Boolean);
     if (booths.length === 0 || services.length === 0) return res.json([]);
     filters.push(`booths.booth IN (${booths.map(() => "?").join(",")})`);
