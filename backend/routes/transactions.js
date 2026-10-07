@@ -8,8 +8,15 @@ const {
   isValidDateString,
   VALID_TRANSACTION_TYPES,
 } = require("../utils/validation");
-const { hasAssignedAccess, isSystemAdmin, requireCapability } = require("../middleware/auth");
-const { calculateTransactionAmounts } = require("../utils/transaction-rules");
+const {
+  hasAssignedAccess,
+  isSystemAdmin,
+  requireCapability,
+} = require("../middleware/auth");
+const {
+  calculateTransactionAmounts,
+  nextTransactionId,
+} = require("../utils/transaction-rules");
 
 const router = express.Router(); // Create a new router object to handle routes related to transactions
 
@@ -23,8 +30,12 @@ router.get("/", requireCapability("transactions.view"), (req, res) => {
   const filters = [];
   const parameters = [];
   if (!isSystemAdmin(req.user)) {
-    const booths = String(req.user.assigned_booths || "").split(",").filter(Boolean);
-    const services = String(req.user.assigned_services || "").split(",").filter(Boolean);
+    const booths = String(req.user.assigned_booths || "")
+      .split(",")
+      .filter(Boolean);
+    const services = String(req.user.assigned_services || "")
+      .split(",")
+      .filter(Boolean);
     if (booths.length === 0 || services.length === 0) return res.json([]);
     filters.push(`booths.booth IN (${booths.map(() => "?").join(",")})`);
     parameters.push(...booths);
@@ -46,7 +57,6 @@ router.get("/", requireCapability("transactions.view"), (req, res) => {
 
 router.post("/", requireCapability("transactions.create"), (req, res) => {
   const {
-    transaction_id,
     transaction_type,
     booth_id,
     service_id,
@@ -56,13 +66,16 @@ router.post("/", requireCapability("transactions.create"), (req, res) => {
     transaction_date,
   } = req.body; // Extract the required fields from the request body
 
-  // Check that all required fields were provided
+  // The server owns the transaction ID so stale browser state cannot reuse one.
+  const transaction_id = nextTransactionId(db);
 
-  if (!isNonEmptyString(transaction_id, 50) || !VALID_TRANSACTION_TYPES.includes(transaction_type)) {
-    return res.status(400).json({ error: "transaction_id and transaction_type must be valid" });
+  if (!VALID_TRANSACTION_TYPES.includes(transaction_type)) {
+    return res.status(400).json({ error: "transaction_type must be valid" });
   }
   if (!isPositiveInteger(booth_id) || !isPositiveInteger(service_id)) {
-    return res.status(400).json({ error: "A valid booth and service are required" });
+    return res
+      .status(400)
+      .json({ error: "A valid booth and service are required" });
   }
   if (
     !isFiniteNumber(transaction_amount, { min: Number.EPSILON }) ||
@@ -71,7 +84,8 @@ router.post("/", requireCapability("transactions.create"), (req, res) => {
     typeof account_number !== "string"
   ) {
     return res.status(400).json({
-      error: "Transaction amounts, date and customer contact fields must be valid",
+      error:
+        "Transaction amounts, date and customer contact fields must be valid",
     });
   }
 
@@ -98,17 +112,26 @@ router.post("/", requireCapability("transactions.create"), (req, res) => {
   }
 
   if (!hasAssignedAccess(req.user, booth.booth, service.service)) {
-    return res.status(403).json({ error: "You do not have access to this booth and service" });
+    return res
+      .status(403)
+      .json({ error: "You do not have access to this booth and service" });
   }
 
   const serviceAtBooth = db
-    .prepare("SELECT 1 FROM booth_services WHERE booth_id = ? AND service_id = ?")
+    .prepare(
+      "SELECT 1 FROM booth_services WHERE booth_id = ? AND service_id = ?",
+    )
     .get(booth_id, service_id);
   if (!serviceAtBooth) {
-    return res.status(400).json({ error: "The selected service is not available at this booth" });
+    return res
+      .status(400)
+      .json({ error: "The selected service is not available at this booth" });
   }
 
-  const calculated = calculateTransactionAmounts(transaction_amount, service.revenue_rate);
+  const calculated = calculateTransactionAmounts(
+    transaction_amount,
+    service.revenue_rate,
+  );
 
   try {
     // Insert the transaction into the database

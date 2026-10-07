@@ -12,4 +12,18 @@ function calculateTransactionAmounts(amount, revenueRate) {
   return { tax, amountAfterTax, revenue };
 }
 
-module.exports = { TRANSACTION_TAX_RATE, calculateTransactionAmounts };
+function nextTransactionId(db) {
+  const latest = db
+    .prepare("SELECT transaction_id FROM transactions ORDER BY id DESC LIMIT 1")
+    .get();
+  const latestNumber = latest
+    ? Number(String(latest.transaction_id).replace(/^WB/i, ""))
+    : 0;
+  return `WB${String(latestNumber + 1).padStart(7, "0")}`;
+}
+
+module.exports = {
+  TRANSACTION_TAX_RATE,
+  calculateTransactionAmounts,
+  nextTransactionId,
+};

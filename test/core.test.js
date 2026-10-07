@@ -14,6 +14,7 @@ const {
   VALID_TRANSACTION_TYPES,
 } = require("../backend/utils/validation");
 const { requireCapability } = require("../backend/middleware/auth");
+const { nextTransactionId } = require("../backend/utils/transaction-rules");
 const db = require("../backend/db");
 
 test("database compatibility layer converts SQLite statements to PostgreSQL-safe SQL", () => {
@@ -42,6 +43,17 @@ test("password hashes verify correctly without exposing the original password", 
   assert.notEqual(hash, password);
   assert.equal(verifyPassword(password, hash), true);
   assert.equal(verifyPassword("incorrect-password", hash), false);
+});
+
+test("transaction IDs are generated from the largest database ID", () => {
+  const existing = db
+    .prepare("SELECT transaction_id FROM transactions ORDER BY id DESC LIMIT 1")
+    .get();
+  const nextId = nextTransactionId(db);
+  assert.equal(
+    nextId,
+    `WB${String(Number(existing.transaction_id.replace(/^WB/, "")) + 1).padStart(7, "0")}`,
+  );
 });
 
 test("startup guarantees the documented demo users are available", () => {
