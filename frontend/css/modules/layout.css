@@ -208,6 +208,10 @@ nav a:hover {
   overflow: hidden;
 }
 
+.sidebar-backdrop {
+  display: none;
+}
+
 main {
   flex: 1;
 
@@ -522,5 +526,127 @@ main {
 .profile-menu-item:hover {
   color: #9d1d23;
   background-color: #f1f3f4;
+}
+
+/* Mobile shell: keep the navigation accessible without consuming phone width. */
+@media (max-width: 900px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .app {
+    min-height: 100vh;
+  }
+
+  aside {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 50;
+
+    width: 280px;
+    flex: 0 0 280px;
+
+    transform: translateX(-100%);
+    box-shadow: 10px 0 28px rgba(0, 0, 0, 0.18);
+  }
+
+  body.mobile-sidebar-open aside {
+    transform: translateX(0);
+  }
+
+  /* The mobile drawer always shows labels, even if desktop collapsed state was saved. */
+  body.sidebar-collapsed aside {
+    width: 280px;
+    flex-basis: 280px;
+    padding: 15px;
+  }
+
+  body.sidebar-collapsed .sidebar-header {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  body.sidebar-collapsed .sidebar-title {
+    display: inline;
+  }
+
+  body.sidebar-collapsed .sidebar-mark {
+    display: none;
+  }
+
+  body.sidebar-collapsed nav a {
+    justify-content: flex-start;
+    padding: 12px;
+  }
+
+  body.sidebar-collapsed nav a > span:not(.nav-icon) {
+    display: inline;
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+
+    width: 100%;
+    height: 100%;
+    padding: 0;
+
+    background: rgba(20, 22, 24, 0.45);
+    border: 0;
+    cursor: pointer;
+  }
+
+  body.mobile-sidebar-open .sidebar-backdrop {
+    display: block;
+  }
+
+  main {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    padding: 0 16px 24px;
+  }
+
+  .top-bar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px;
+    min-height: 62px;
+  }
+
+  .topbar-sidebar-toggle {
+    margin-right: 0;
+  }
+
+  .search {
+    position: relative;
+    left: auto;
+    transform: none;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .profile-wrap {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-greeting {
+    display: none;
+  }
+
+  .profile {
+    width: 44px;
+    height: 44px;
+  }
+
+  .page-header.top-header {
+    margin-top: 8px;
+    padding: 8px 10px;
+  }
 }
 

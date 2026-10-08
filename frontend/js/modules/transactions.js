@@ -2,6 +2,100 @@ import { state, transactionPagination } from "./state.js";
 import { loadCoreData } from "./data-loader.js";
 import { formatDateTime, money } from "./formatters.js";
 import { showReceipt } from "./receipt.js";
+import { api } from "./api.js";
+import { canPerform } from "./auth.js";
+import { closeModal, openCrudConfirmation, openModal, showCrudSuccess } from "./modal.js";
+
+let editingTransaction = null;
+
+function toDateTimeInput(isoString) {
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+}
+
+function syncEditCustomerFields() {
+  const serviceId = Number(document.getElementById("edit-transaction-service").value);
+  const service = state.services.find((entry) => entry.id === serviceId);
+  const isAccountService = service?.identifier_type === "account";
+  document.getElementById("edit-phone-group").hidden = isAccountService;
+  document.getElementById("edit-account-group").hidden = !isAccountService;
+}
+
+function openTransactionEditor(transaction) {
+  editingTransaction = transaction;
+  const boothSelect = document.getElementById("edit-transaction-booth");
+  const serviceSelect = document.getElementById("edit-transaction-service");
+  boothSelect.innerHTML = state.booths
+    .map((booth) => `<option value="${booth.id}">${booth.booth} - ${booth.location}</option>`)
+    .join("");
+  serviceSelect.innerHTML = state.services
+    .map((service) => `<option value="${service.id}">${service.service}</option>`)
+    .join("");
+
+  document.getElementById("edit-transaction-type").value = transaction.transaction_type;
+  boothSelect.value = String(transaction.booth_id);
+  serviceSelect.value = String(transaction.service_id);
+  document.getElementById("edit-transaction-amount").value = transaction.transaction_amount;
+  document.getElementById("edit-phone-number").value = transaction.phone_number || "";
+  document.getElementById("edit-account-number").value = transaction.account_number || "";
+  document.getElementById("edit-transaction-date").value = toDateTimeInput(transaction.transaction_date);
+  syncEditCustomerFields();
+  openModal(document.getElementById("transaction-edit-modal"));
+}
+
+async function saveEditedTransaction() {
+  if (!editingTransaction) return;
+  const transactionDateValue = document.getElementById("edit-transaction-date").value;
+  const transactionDate = new Date(transactionDateValue);
+  if (!transactionDateValue || Number.isNaN(transactionDate.getTime())) {
+    alert("Enter a valid transaction date and time.");
+    return;
+  }
+  const serviceId = Number(document.getElementById("edit-transaction-service").value);
+  const service = state.services.find((entry) => entry.id === serviceId);
+  const isAccountService = service?.identifier_type === "account";
+  const payload = {
+    transaction_type: document.getElementById("edit-transaction-type").value,
+    booth_id: Number(document.getElementById("edit-transaction-booth").value),
+    service_id: serviceId,
+    transaction_amount: Number(document.getElementById("edit-transaction-amount").value),
+    phone_number: isAccountService ? "" : document.getElementById("edit-phone-number").value.trim(),
+    account_number: isAccountService ? document.getElementById("edit-account-number").value.trim() : "",
+    transaction_date: transactionDate.toISOString(),
+  };
+
+  const saveButton = document.getElementById("save-transaction-edit");
+  saveButton.disabled = true;
+  try {
+    await api.put(`/api/transactions/${encodeURIComponent(editingTransaction.transaction_id)}`, payload);
+    closeModal(document.getElementById("transaction-edit-modal"));
+    editingTransaction = null;
+    await renderTransactions();
+    showCrudSuccess("Transaction Updated", "The transaction was updated successfully.");
+  } catch (error) {
+    alert(error.message || "The transaction could not be updated.");
+  } finally {
+    saveButton.disabled = false;
+  }
+}
+
+function confirmDeleteTransaction(transaction) {
+  openCrudConfirmation({
+    title: "Delete Transaction",
+    subtitle: "This removes the transaction from the local assignment database.",
+    message: `Delete transaction ${transaction.transaction_id}?`,
+    confirmLabel: "Delete Transaction",
+    successTitle: "Transaction Deleted",
+    successMessage: `${transaction.transaction_id} was deleted successfully.`,
+    run: async () => {
+      await api.delete(`/api/transactions/${encodeURIComponent(transaction.transaction_id)}`);
+      await renderTransactions();
+    },
+  });
+}
 
 export async function renderTransactions() {
   try {
@@ -72,8 +166,17 @@ function renderTransactionsTable() {
   const start = (transactionPagination.page - 1) * transactionPagination.pageSize;
   rows.slice(start, start + transactionPagination.pageSize).forEach((transaction) => {
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${transaction.transaction_id}</td><td>${transaction.transaction_type === "deposit" ? "Deposit" : "Withdrawal"}</td><td>${formatDateTime(transaction.transaction_date)}</td><td>${transaction.booth}</td><td>${transaction.service}</td><td>${money(transaction.transaction_amount)}</td><td><button type="button" class="user-action-btn view-transaction-btn">View</button></td>`;
+    const actions = ['<button type="button" class="user-action-btn view-transaction-btn">View</button>'];
+    if (canPerform("transactions.update")) {
+      actions.push('<button type="button" class="user-action-btn edit-transaction-btn">Edit</button>');
+    }
+    if (canPerform("transactions.delete")) {
+      actions.push('<button type="button" class="user-action-btn delete delete-transaction-btn">Delete</button>');
+    }
+    row.innerHTML = `<td>${transaction.transaction_id}</td><td>${transaction.transaction_type === "deposit" ? "Deposit" : "Withdrawal"}</td><td>${formatDateTime(transaction.transaction_date)}</td><td>${transaction.booth}</td><td>${transaction.service}</td><td>${money(transaction.transaction_amount)}</td><td><div class="transaction-actions">${actions.join("")}</div></td>`;
     row.querySelector(".view-transaction-btn").addEventListener("click", () => showReceipt(transaction));
+    row.querySelector(".edit-transaction-btn")?.addEventListener("click", () => openTransactionEditor(transaction));
+    row.querySelector(".delete-transaction-btn")?.addEventListener("click", () => confirmDeleteTransaction(transaction));
     tbody.appendChild(row);
   });
   renderTransactionPagination(totalPages);
@@ -125,6 +228,8 @@ export function setupTransactions() {
   });
   document.getElementById("transaction-prev").addEventListener("click", () => changeTransactionPage(-1));
   document.getElementById("transaction-next").addEventListener("click", () => changeTransactionPage(1));
+  document.getElementById("edit-transaction-service").addEventListener("change", syncEditCustomerFields);
+  document.getElementById("save-transaction-edit").addEventListener("click", saveEditedTransaction);
   document.getElementById("print-transactions").addEventListener("click", () => window.print());
   document.getElementById("export-transactions").addEventListener("click", exportTransactionsCsv);
 }

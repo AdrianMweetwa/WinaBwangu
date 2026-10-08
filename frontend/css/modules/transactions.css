@@ -152,6 +152,12 @@
   padding: 0 10px;
 }
 
+.transaction-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .transactions-table tbody tr:last-child td {
   border-bottom: none;
 }

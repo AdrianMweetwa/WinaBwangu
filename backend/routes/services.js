@@ -1,5 +1,5 @@
-const express = require("express"); // Import the Express library to create a web server
-const db = require("../db"); // Import the database connection object from db.js
+const express = require("express");
+const db = require("../db");
 const {
   isNonEmptyString,
   isFiniteNumber,
@@ -7,10 +7,10 @@ const {
   VALID_IDENTIFIER_TYPES,
 } = require("../utils/validation");
 const { isSystemAdmin, requireCapability } = require("../middleware/auth");
-const router = express.Router(); // Create a new router object to handle routes related to services
+const router = express.Router();
 
 router.get("/", requireCapability("catalog.view"), (req, res) => {
-  let services = db.prepare("SELECT * FROM services ORDER BY id").all(); // Retrieve all services from the database
+  let services = db.prepare("SELECT * FROM services ORDER BY id").all();
   if (!isSystemAdmin(req.user)) {
     const allowed = String(req.user.assigned_services || "")
       .split(",")
@@ -19,10 +19,10 @@ router.get("/", requireCapability("catalog.view"), (req, res) => {
       .filter(Boolean);
     services = services.filter((service) => allowed.includes(service.service));
   }
-  res.json(services); // Send a JSON response containing the list of services
+  res.json(services);
 });
 
-// Create a new service
+// Create a service definition.
 router.post("/", requireCapability("settings.write"), (req, res) => {
   const { service, monthly_transaction_limit, revenue_rate, identifier_type } =
     req.body;
@@ -118,7 +118,7 @@ router.put("/:id", requireCapability("settings.write"), (req, res) => {
   }
 });
 
-// Delete a service, unless it already has transaction history
+// Keep service history safe by blocking deletion when transactions exist.
 router.delete("/:id", requireCapability("settings.write"), (req, res) => {
   if (!isPositiveInteger(req.params.id)) {
     return res.status(400).json({ error: "A valid service id is required" });
@@ -143,4 +143,4 @@ router.delete("/:id", requireCapability("settings.write"), (req, res) => {
   res.json({ message: "Service deleted successfully" });
 });
 
-module.exports = router; // Export the router object so that it can be used in other parts of the application
+module.exports = router;

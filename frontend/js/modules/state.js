@@ -1,4 +1,3 @@
-// Shared in-memory state used by the page modules.
 export const state = {
   currentUser: null,
   booths: [],

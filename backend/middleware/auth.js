@@ -7,6 +7,8 @@ const roleCapabilities = {
     "settings.write",
     "transactions.view",
     "transactions.create",
+    "transactions.update",
+    "transactions.delete",
     "users.manage",
   ],
   admin_agent: [
@@ -14,8 +16,16 @@ const roleCapabilities = {
     "settings.view",
     "transactions.view",
     "transactions.create",
+    "transactions.update",
+    "transactions.delete",
   ],
-  agent: ["catalog.view", "transactions.view", "transactions.create"],
+  agent: [
+    "catalog.view",
+    "transactions.view",
+    "transactions.create",
+    "transactions.update",
+    "transactions.delete",
+  ],
 };
 
 function requireAuth(req, res, next) {

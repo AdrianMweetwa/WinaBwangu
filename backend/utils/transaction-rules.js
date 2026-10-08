@@ -1,5 +1,4 @@
-// We keep the assignment-wide transaction rules on the server so that a browser
-// cannot change the tax or revenue figures before storage.
+// Shared transaction rules used by the API and seed data.
 const TRANSACTION_TAX_RATE = 0.16;
 
 function calculateTransactionAmounts(amount, revenueRate) {

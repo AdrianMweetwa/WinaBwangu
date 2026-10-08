@@ -113,6 +113,29 @@ test("role capabilities block unauthorized management actions", () => {
   assert.equal(can("agent", "users.manage"), false);
 });
 
+test("transactions expose complete CRUD routes and controls", () => {
+  const routes = fs.readFileSync(
+    path.join(__dirname, "../backend/routes/transactions.js"),
+    "utf8",
+  );
+  const transactionUi = fs.readFileSync(
+    path.join(__dirname, "../frontend/js/modules/transactions.js"),
+    "utf8",
+  );
+  const transactionModal = fs.readFileSync(
+    path.join(__dirname, "../frontend/index.html"),
+    "utf8",
+  );
+
+  assert.match(routes, /router\.get\(\s*["']\/:transactionId/);
+  assert.match(routes, /router\.post\(\s*["']\//);
+  assert.match(routes, /router\.put\(\s*["']\/:transactionId/);
+  assert.match(routes, /router\.delete\(\s*["']\/:transactionId/);
+  assert.match(transactionUi, /api\.put\(/);
+  assert.match(transactionUi, /api\.delete\(/);
+  assert.match(transactionModal, /id="transaction-edit-modal"/);
+});
+
 test("global search dropdown stays above the app header", () => {
   const css = fs.readFileSync(
     path.join(__dirname, "../frontend/css/modules/layout.css"),
@@ -169,7 +192,30 @@ test("agent assignments include the services available at Wina4", () => {
     "Airtel Money",
     "MTN Money",
     "Zamtel Money",
-    "Zanaco",
-    "FNB",
   ]);
+});
+
+test("mobile layout uses an off-canvas sidebar and full-width main content", () => {
+  const css = fs.readFileSync(
+    path.join(__dirname, "../frontend/css/modules/layout.css"),
+    "utf8",
+  );
+
+  assert.match(css, /@media \(max-width: 900px\)/);
+  assert.match(css, /body\.mobile-sidebar-open aside/);
+  assert.match(
+    css,
+    /@media \(max-width: 900px\)[\s\S]*main\s*\{[^}]*flex: 1 1 auto/,
+  );
+  assert.match(css, /\.sidebar-backdrop\s*\{[\s\S]*position: fixed/);
+  assert.match(css, /\.search\s*\{[\s\S]*width: 100%/);
+
+  const navigationJs = fs.readFileSync(
+    path.join(__dirname, "../frontend/js/modules/navigation.js"),
+    "utf8",
+  );
+  assert.match(navigationJs, /matchMedia\("\(max-width: 900px\)"\)/);
+  assert.match(navigationJs, /closeMobileSidebar/);
+  assert.match(navigationJs, /sidebar\.inert = mobileQuery\.matches && !mobileOpen/);
+  assert.match(navigationJs, /event\.key === "Escape"/);
 });

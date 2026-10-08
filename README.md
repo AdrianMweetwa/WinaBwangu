@@ -47,6 +47,12 @@ npm run seed
 
 The seed command creates the SQLite database, loads the six booths and five services, creates the three demo users, and loads the 308 Appendix 1 transactions. It replaces existing transaction rows, so run it when a clean assignment dataset is required.
 
+The root `reset-db.js` utility is for hosted PostgreSQL databases only. It permanently clears the hosted schema and requires `DATABASE_URL`; do not run it for normal local SQLite setup.
+
+```powershell
+npm run reset-db
+```
+
 ## Render / Hosted Deployment
 
 The server is already configured to use the runtime port provided by the host:
@@ -153,6 +159,7 @@ WinaBwangu/
 ```powershell
 npm install       # Install dependencies
 npm run seed      # Create/reset the local database
+npm run reset-db  # Destructively reset hosted PostgreSQL (DATABASE_URL required)
 npm test          # Run automated tests
 npm start         # Start the Express server
 ```

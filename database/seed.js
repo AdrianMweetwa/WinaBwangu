@@ -1,4 +1,4 @@
-// We seed the case-study reference data for our Wina Bwangu project.
+// Seed the case-study reference data.
 const db = require("../backend/db");
 const { hashPassword } = require("../backend/utils/password");
 const {
@@ -26,12 +26,12 @@ const boothServices = [
   ["Wina1", "Airtel Money", "MTN Money", "Zamtel Money", "Zanaco", "FNB"],
   ["Wina2", "Airtel Money", "MTN Money", "Zamtel Money", "FNB"],
   ["Wina3", "Airtel Money", "MTN Money", "Zamtel Money", "Zanaco", "FNB"],
-  ["Wina4", "Airtel Money", "MTN Money", "Zamtel Money", "Zanaco", "FNB"],
+  ["Wina4", "Airtel Money", "MTN Money", "Zamtel Money"],
   ["Wina5", "Airtel Money", "MTN Money", "Zanaco", "FNB"],
   ["Wina6", "Airtel Money", "MTN Money", "Zamtel Money"],
 ];
 
-// Appendix 1 rows: [reference, booth, service, revenue rate, amount].
+// Appendix 1 rows: reference, booth, service, revenue rate and amount.
 const appendixTransactions = require("./appendix-transactions");
 
 const insertBooth = db.prepare(
@@ -85,7 +85,7 @@ const insertTransaction = db.prepare(`
 `);
 
 const seedTransactions = db.transaction(() => {
-  // Replace existing sample rows with our exact Appendix 1 dataset.
+  // Rebuild the transaction sample so the seed is repeatable.
   db.prepare("DELETE FROM transactions").run();
 
   for (const transaction of appendixTransactions) {
@@ -140,7 +140,7 @@ const seedTransactions = db.transaction(() => {
 });
 seedTransactions();
 
-// Keep our demo users available for testing the Users page.
+// Keep the demo users available for testing.
 const insertUser = db.prepare(`
   INSERT OR IGNORE INTO users
     (username, full_name, email, password_hash, role, company, assigned_booths, assigned_services, status)

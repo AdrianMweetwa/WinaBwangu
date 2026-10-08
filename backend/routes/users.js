@@ -11,13 +11,13 @@ const {
 
 const router = express.Router();
 
-// Columns safe to send to the browser (never send password_hash back).
+// Keep password hashes out of API responses.
 const PUBLIC_COLUMNS = `
   id, username, full_name, email, role, company,
   assigned_booths, assigned_services, status, last_login, created_at
 `;
 
-// Turn "" into [] and "Wina1,Wina2" into ["Wina1", "Wina2"] for the frontend.
+// Convert stored comma-separated assignments to frontend arrays.
 function toList(csv) {
   return csv ? csv.split(",").filter(Boolean) : [];
 }

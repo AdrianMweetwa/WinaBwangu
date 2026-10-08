@@ -139,6 +139,7 @@
 
 .settings-modal-group input[type="text"],
 .settings-modal-group input[type="number"],
+.settings-modal-group input[type="datetime-local"],
 .settings-modal-group select {
   width: 100%;
   height: 46px;

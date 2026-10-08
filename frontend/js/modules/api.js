@@ -1,4 +1,3 @@
-// Shared HTTP client for all frontend modules.
 export const api = {
   async request(method, path, body) {
     const res = await fetch(path, {

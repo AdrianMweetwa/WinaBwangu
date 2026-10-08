@@ -1,12 +1,12 @@
-const express = require("express"); // Import the Express library to create a web server
+const express = require("express");
 
-const db = require("../db"); // Import the database connection object from db.js
+const db = require("../db");
 const { isNonEmptyString, isPositiveInteger } = require("../utils/validation");
 const { isSystemAdmin, requireCapability } = require("../middleware/auth");
-const router = express.Router(); // Create a new router object to handle routes related to booths
+const router = express.Router();
 
 router.get("/", requireCapability("catalog.view"), (req, res) => {
-  let booths = db.prepare("SELECT * FROM booths ORDER BY id").all(); // Retrieve all booths from the database
+  let booths = db.prepare("SELECT * FROM booths ORDER BY id").all();
   if (!isSystemAdmin(req.user)) {
     const allowed = String(req.user.assigned_booths || "")
       .split(",")
@@ -15,7 +15,7 @@ router.get("/", requireCapability("catalog.view"), (req, res) => {
       .filter(Boolean);
     booths = booths.filter((booth) => allowed.includes(booth.booth));
   }
-  res.json(booths); // Send a JSON response containing the list of booths
+  res.json(booths);
 });
 
 router.get(
@@ -24,9 +24,9 @@ router.get(
   (req, res) => {
     const booth = db
       .prepare("SELECT * FROM booths WHERE booth = ?")
-      .get(req.params.booth); // Retrieve the booth with the specified booth code from the database
+      .get(req.params.booth);
     if (!booth) {
-      return res.status(404).json({ error: "Booth not found" }); // If the booth is not found, send a 404 response with an error message
+      return res.status(404).json({ error: "Booth not found" });
     }
     if (!isSystemAdmin(req.user)) {
       const allowed = String(req.user.assigned_booths || "")
@@ -41,10 +41,6 @@ router.get(
       }
     }
 
-    // Retrieve all services offered by the specified booth from the database
-    // Use a JOIN query to get the services associated with the booth from the booth_services table
-    // The query selects all columns from the services table and joins it with the booth_services table on the service_id
-    // The WHERE clause filters the results to only include services associated with the specified booth_id
     let services = db
       .prepare(
         `
@@ -53,7 +49,7 @@ router.get(
         WHERE booth_services.booth_id = ? ORDER BY services.id
     `,
       )
-      .all(booth.id); // Retrieve all services offered by the specified booth from the database
+      .all(booth.id);
     if (!isSystemAdmin(req.user)) {
       const allowed = String(req.user.assigned_services || "")
         .split(",")
@@ -65,11 +61,11 @@ router.get(
       );
     }
 
-    res.json({ booth: booth, services: services }); // Send a JSON response containing the list of services offered by the specified booth
+    res.json({ booth, services });
   },
 );
 
-// Create a new booth and link it to the services it offers
+// Create a booth and link its available services.
 router.post("/", requireCapability("settings.write"), (req, res) => {
   const { booth, location, services } = req.body;
 
@@ -170,8 +166,7 @@ router.put("/:id", requireCapability("settings.write"), (req, res) => {
   }
 });
 
-// Delete a booth, unless it already has transaction history (to avoid silently
-// wiping out financial records via the schema's ON DELETE CASCADE)
+// Keep booth history safe by blocking deletion when transactions exist.
 router.delete("/:id", requireCapability("settings.write"), (req, res) => {
   if (!isPositiveInteger(req.params.id)) {
     return res.status(400).json({ error: "A valid booth id is required" });
@@ -194,4 +189,4 @@ router.delete("/:id", requireCapability("settings.write"), (req, res) => {
   res.json({ message: "Booth deleted successfully" });
 });
 
-module.exports = router; // Export the router object so that it can be used in other parts of the application
+module.exports = router;

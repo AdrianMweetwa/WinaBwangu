@@ -14,6 +14,8 @@ export const roleCapabilities = {
     "settings.write",
     "transactions.view",
     "transactions.create",
+    "transactions.update",
+    "transactions.delete",
     "users.manage",
   ],
   admin_agent: [
@@ -21,8 +23,16 @@ export const roleCapabilities = {
     "settings.view",
     "transactions.view",
     "transactions.create",
+    "transactions.update",
+    "transactions.delete",
   ],
-  agent: ["catalog.view", "transactions.view", "transactions.create"],
+  agent: [
+    "catalog.view",
+    "transactions.view",
+    "transactions.create",
+    "transactions.update",
+    "transactions.delete",
+  ],
 };
 
 export function canAccessPage(pageId, user = state.currentUser) {

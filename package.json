@@ -1,11 +1,12 @@
 {
   "name": "winabwangu",
   "version": "1.0.0",
-  "description": "",
+  "description": "Wina Bwangu booth, service, transaction and user management app",
   "main": "index.js",
   "scripts": {
     "start": "node backend/server.js",
     "seed": "node database/seed.js",
+    "reset-db": "node reset-db.js",
     "test": "node --test"
   },
   "keywords": [],
