@@ -30,6 +30,8 @@ Verified on Windows with Node.js 24.21.0, npm 11.19.0 and headless Microsoft Edg
 
 ## Publication status
 
-The updated source is tested locally but has not been committed or pushed by this work. The published GitHub commit still contains the previous behavior. A new GitHub clone will include the fixes only after these source changes are committed and pushed. No claim is made that the updated version is already published or has been tested on another operating system.
+The implementation was committed locally as `17ccc62` on 15 October 2026. Its source was compared with the previously tested clean checkout and matched. Publishing with `git push origin main` was attempted, but Git Credential Manager reported `User cancelled dialog`; Git could not obtain a GitHub username. The push did not succeed.
+
+The published GitHub version therefore still contains the previous behavior. Complete GitHub authentication and run `git push origin main`, then verify a new remote clone. The local committed source passes the clean-install checks above, but the updated version is not yet published. No testing on another operating system is claimed.
 
 Browser print tests verify controls and receipt print styles; they do not operate a physical printer.
