@@ -12,6 +12,8 @@
     "test:browser": "playwright test",
     "test:postgres": "node scripts/test-postgres.mjs",
     "verify:startup": "node scripts/verify-start.mjs",
+    "backup": "node scripts/backup.cjs",
+    "secure-demo": "node scripts/secure-demo.cjs",
     "test:all": "npm run test && npm run test:browser && npm run test:postgres"
   },
   "keywords": [],

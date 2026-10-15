@@ -9,3 +9,5 @@ database/*.sqlite*
 test-results/
 test-results-*/
 playwright-report/
+backups/
+.private/

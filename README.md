@@ -201,5 +201,42 @@ hosted connections retain the existing TLS behavior by default.
 
 Press `Ctrl+C` in the terminal to stop the server.
 
+## Before Real Use
+
+After completing the fresh-install tests, replace the default demo passwords:
+
+```powershell
+npm.cmd run secure-demo
+```
+
+This SQLite command takes a verified backup, generates a separate random password
+for each demo account still using `password123`, and invalidates their sessions
+and reset tokens. Existing non-default passwords are preserved. The generated
+passwords are saved under `.private/` with restricted access; they are not printed
+or committed. Store them in your password manager. Each new installation needs
+this step; generated credentials are deliberately not distributed through Git.
+`verify:startup` uses the initial demo password, so run it before rotation.
+
+Back up the local SQLite database manually or install the Windows daily task:
+
+```powershell
+npm.cmd run backup
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/install-backup-task.ps1
+```
+
+The task runs at 18:00 local time while the installing user is signed in, with a
+missed run started when available. It uses SQLite's online backup API and verifies
+the resulting database. Backups and `backups/daily.log` stay outside Git. Existing
+backups are retained. Install the task again if the project or Node.js moves.
+These are local recovery copies; keep a separate protected copy off the machine
+for protection against disk loss. PostgreSQL installations need managed backups
+or `pg_dump`; these two local maintenance commands intentionally reject them.
+
+Before restoring, stop the app and preserve its current database. Verify a chosen
+backup with SQLite `PRAGMA integrity_check`, then restore it to `DATABASE_PATH`
+(default `database/winabwangu.db`). A restore also restores the passwords and
+sessions from that backup, so review credentials afterward. Never restore over
+a running application.
+
 
 GitHub: https://github.com/AdrianMweetwa/WinaBwangu

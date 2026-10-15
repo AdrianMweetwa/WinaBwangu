@@ -30,8 +30,14 @@ Verified on Windows with Node.js 24.21.0, npm 11.19.0 and headless Microsoft Edg
 
 ## Publication status
 
-The implementation was committed locally as `17ccc62` on 15 October 2026. Its source was compared with the previously tested clean checkout and matched. Publishing with `git push origin main` was attempted, but Git Credential Manager reported `User cancelled dialog`; Git could not obtain a GitHub username. The push did not succeed.
+The implementation was committed as `17ccc62`. After an earlier authentication cancellation, the push succeeded on 15 October 2026 and published through `e69caea`. A new remote-clone verification is being performed for the final maintenance additions. No testing on another operating system is claimed.
 
-The published GitHub version therefore still contains the previous behavior. Complete GitHub authentication and run `git push origin main`, then verify a new remote clone. The local committed source passes the clean-install checks above, but the updated version is not yet published. No testing on another operating system is claimed.
+## Local maintenance — 15 October 2026
+
+- Took a SQLite online backup and verified its integrity.
+- Replaced all three local demo passwords with distinct random passwords; verified the generated credentials and rejection of `password123`.
+- Invalidated the affected users' sessions and password-reset tokens. Credentials are stored only in the restricted, Git-ignored `.private/` directory.
+- Registered `WinaBwanguBackup` for 18:00 local time while the current Windows user is signed in. Its initial run completed with result code 0 and produced a verified backup.
+- Added repeatable maintenance commands and documentation. New installations still require their own password rotation and backup setup.
 
 Browser print tests verify controls and receipt print styles; they do not operate a physical printer.
