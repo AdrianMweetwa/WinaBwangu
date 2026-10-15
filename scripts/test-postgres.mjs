@@ -1,8 +1,9 @@
 import EmbeddedPostgres from 'embedded-postgres';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { spawn } from 'node:child_process';
+import { join, dirname } from 'node:path';
+import { spawn, execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import net from 'node:net';
 const probe = net.createServer();
 await new Promise(resolve => probe.listen(0, '127.0.0.1', resolve));
@@ -31,6 +32,19 @@ try {
     if (code !== 0) throw new Error(`${file} failed (${code})`);
   }
 } finally {
-  if (started) await postgres.stop();
+  if (started) {
+    if (process.platform === 'win32') {
+      // The package uses taskkill on Windows, which can leave PostgreSQL 18
+      // workers holding its output pipes open. Ask PostgreSQL to stop its own
+      // workers before removing the disposable cluster instead.
+      const pgCtl = join(dirname(postgres.process.spawnfile), 'pg_ctl.exe');
+      await promisify(execFile)(pgCtl, ['stop', '-D', join(directory, 'data'), '-m', 'fast', '-w', '-t', '30'], { windowsHide: true });
+      // Prevent the package's exit hook from waiting again on an exited process.
+      postgres.process = undefined;
+    } else {
+      await postgres.stop();
+    }
+  }
   rmSync(directory, { recursive: true, force: true });
+  console.log('Temporary PostgreSQL server stopped and removed.');
 }
