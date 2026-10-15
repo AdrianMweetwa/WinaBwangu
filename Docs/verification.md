@@ -30,7 +30,9 @@ Verified on Windows with Node.js 24.21.0, npm 11.19.0 and headless Microsoft Edg
 
 ## Publication status
 
-The implementation and maintenance additions were pushed successfully on 15 October 2026. A completely new clone was fetched directly from GitHub at `d8467dc`, without copying or modifying application source. `npm ci`, copying `.env.example` to `.env`, seeding an empty database, `npm run verify:startup` and `npm run test:all` all passed. Results: 29 backend/database tests, 6 browser tests, and the PostgreSQL checks. The checkout remained clean; no machine-local dependencies, credentials or database were copied into it. The published source is verified for this Windows/Node.js 24 setup. No testing on another operating system is claimed.
+The implementation and maintenance additions were pushed successfully on 15 October 2026. A completely new clone was fetched directly from GitHub at `d8467dc`, without copying or modifying application source. `npm ci`, copying `.env.example` to `.env`, seeding an empty database and `npm run verify:startup` passed. Test results: 29 backend/database tests, 6 browser tests, and all PostgreSQL assertions passed.
+
+The initial PostgreSQL cleanup left an orphan Windows worker holding output pipes open. After stopping that isolated test worker, shutdown was changed to use PostgreSQL's own `pg_ctl` command. The fix was pushed as `e439272`, pulled into the verification clone, and the PostgreSQL suite passed again with automatic server shutdown, directory removal and exit code 0. No application source was manually edited in that clone. No machine-local dependencies, credentials or database were copied into it. The published source is verified for this Windows/Node.js 24 setup; no testing on another operating system is claimed.
 
 ## Local maintenance — 15 October 2026
 
