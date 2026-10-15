@@ -30,7 +30,7 @@ Verified on Windows with Node.js 24.21.0, npm 11.19.0 and headless Microsoft Edg
 
 ## Publication status
 
-The implementation was committed as `17ccc62`. After an earlier authentication cancellation, the push succeeded on 15 October 2026 and published through `e69caea`. A new remote-clone verification is being performed for the final maintenance additions. No testing on another operating system is claimed.
+The implementation and maintenance additions were pushed successfully on 15 October 2026. A completely new clone was fetched directly from GitHub at `d8467dc`, without copying or modifying application source. `npm ci`, copying `.env.example` to `.env`, seeding an empty database, `npm run verify:startup` and `npm run test:all` all passed. Results: 29 backend/database tests, 6 browser tests, and the PostgreSQL checks. The checkout remained clean; no machine-local dependencies, credentials or database were copied into it. The published source is verified for this Windows/Node.js 24 setup. No testing on another operating system is claimed.
 
 ## Local maintenance — 15 October 2026
 
@@ -38,6 +38,7 @@ The implementation was committed as `17ccc62`. After an earlier authentication c
 - Replaced all three local demo passwords with distinct random passwords; verified the generated credentials and rejection of `password123`.
 - Invalidated the affected users' sessions and password-reset tokens. Credentials are stored only in the restricted, Git-ignored `.private/` directory.
 - Registered `WinaBwanguBackup` for 18:00 local time while the current Windows user is signed in. Its initial run completed with result code 0 and produced a verified backup.
+- Restored the post-rotation backup into a separate test database, verified its integrity and exact transaction preservation, then successfully authenticated all three accounts using the generated credentials.
 - Added repeatable maintenance commands and documentation. New installations still require their own password rotation and backup setup.
 
 Browser print tests verify controls and receipt print styles; they do not operate a physical printer.
