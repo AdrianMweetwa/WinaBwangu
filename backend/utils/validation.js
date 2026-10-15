@@ -8,10 +8,14 @@ function isNonEmptyString(value, maxLength = 255) {
 }
 
 function isPositiveInteger(value) {
-  return Number.isInteger(Number(value)) && Number(value) > 0;
+  return isFiniteNumber(value) && Number.isInteger(Number(value)) && Number(value) > 0;
 }
 
 function isFiniteNumber(value, { min = -Infinity, max = Infinity } = {}) {
+  if (
+    (typeof value !== "number" && typeof value !== "string") ||
+    (typeof value === "string" && value.trim() === "")
+  ) return false;
   const number = Number(value);
   return Number.isFinite(number) && number >= min && number <= max;
 }

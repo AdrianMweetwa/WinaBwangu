@@ -42,7 +42,7 @@ router.get("/", requireCapability("transactions.view"), (req, res) => {
   const where = filters.length ? `WHERE ${filters.join(" AND ")}` : "";
   const transactions = db
     .prepare(
-      `SELECT * FROM transactions INNER JOIN booths ON transactions.booth_id = booths.id INNER JOIN services ON transactions.service_id = services.id ${where} ORDER BY transactions.id DESC`,
+      `SELECT transactions.*, booths.booth, booths.location, services.service, services.identifier_type, services.revenue_rate FROM transactions INNER JOIN booths ON transactions.booth_id = booths.id INNER JOIN services ON transactions.service_id = services.id ${where} ORDER BY transactions.id DESC`,
     )
     .all(...parameters);
 
@@ -197,145 +197,13 @@ router.post("/", requireCapability("transactions.create"), (req, res) => {
   }
 });
 
-router.put(
-  "/:transactionId",
-  requireCapability("transactions.update"),
-  (req, res) => {
-    const existing = db
-      .prepare(
-        `SELECT transactions.transaction_id, booths.booth, services.service
-         FROM transactions
-         INNER JOIN booths ON transactions.booth_id = booths.id
-         INNER JOIN services ON transactions.service_id = services.id
-         WHERE transactions.transaction_id = ?`,
-      )
-      .get(req.params.transactionId);
-
-    if (!existing) {
-      return res.status(404).json({ error: "Transaction not found" });
-    }
-    if (!hasAssignedAccess(req.user, existing.booth, existing.service)) {
-      return res
-        .status(403)
-        .json({ error: "You do not have access to this transaction" });
-    }
-
-    const {
-      transaction_type,
-      booth_id,
-      service_id,
-      transaction_amount,
-      phone_number,
-      account_number,
-      transaction_date,
-    } = req.body;
-
-    if (!VALID_TRANSACTION_TYPES.includes(transaction_type)) {
-      return res.status(400).json({ error: "transaction_type must be valid" });
-    }
-    if (!isPositiveInteger(booth_id) || !isPositiveInteger(service_id)) {
-      return res
-        .status(400)
-        .json({ error: "A valid booth and service are required" });
-    }
-    if (
-      !isFiniteNumber(transaction_amount, { min: Number.EPSILON }) ||
-      !isValidDateString(transaction_date) ||
-      typeof phone_number !== "string" ||
-      typeof account_number !== "string"
-    ) {
-      return res.status(400).json({
-        error:
-          "Transaction amounts, date and customer contact fields must be valid",
-      });
-    }
-
-    const booth = db.prepare("SELECT * FROM booths WHERE id = ?").get(booth_id);
-    if (!booth) return res.status(400).json({ error: "Booth not found" });
-
-    const service = db
-      .prepare("SELECT * FROM services WHERE id = ?")
-      .get(service_id);
-    if (!service) return res.status(400).json({ error: "Service not found" });
-
-    if (!hasAssignedAccess(req.user, booth.booth, service.service)) {
-      return res
-        .status(403)
-        .json({ error: "You do not have access to this booth and service" });
-    }
-
-    const serviceAtBooth = db
-      .prepare(
-        "SELECT 1 FROM booth_services WHERE booth_id = ? AND service_id = ?",
-      )
-      .get(booth_id, service_id);
-    if (!serviceAtBooth) {
-      return res
-        .status(400)
-        .json({ error: "The selected service is not available at this booth" });
-    }
-
-    const calculated = calculateTransactionAmounts(
-      transaction_amount,
-      service.revenue_rate,
-    );
-
-    db.prepare(
-      `UPDATE transactions SET
-        transaction_type = ?, booth_id = ?, service_id = ?,
-        transaction_amount = ?, phone_number = ?, account_number = ?,
-        transaction_tax = ?, transaction_amount_after_tax = ?,
-        transaction_revenue = ?, transaction_date = ?
-       WHERE transaction_id = ?`,
-    ).run(
-      transaction_type,
-      booth_id,
-      service_id,
-      transaction_amount,
-      phone_number,
-      account_number,
-      calculated.tax,
-      calculated.amountAfterTax,
-      calculated.revenue,
-      transaction_date,
-      existing.transaction_id,
-    );
-
-    res.json({
-      message: "Transaction updated successfully",
-      calculation: calculated,
-    });
-  },
-);
-
-router.delete(
-  "/:transactionId",
-  requireCapability("transactions.delete"),
-  (req, res) => {
-    const transaction = db
-      .prepare(
-        `SELECT transactions.transaction_id, booths.booth, services.service
-         FROM transactions
-         INNER JOIN booths ON transactions.booth_id = booths.id
-         INNER JOIN services ON transactions.service_id = services.id
-         WHERE transactions.transaction_id = ?`,
-      )
-      .get(req.params.transactionId);
-
-    if (!transaction) {
-      return res.status(404).json({ error: "Transaction not found" });
-    }
-    if (!hasAssignedAccess(req.user, transaction.booth, transaction.service)) {
-      return res
-        .status(403)
-        .json({ error: "You do not have access to this transaction" });
-    }
-
-    db.prepare("DELETE FROM transactions WHERE transaction_id = ?").run(
-      transaction.transaction_id,
-    );
-    res.json({ message: "Transaction deleted successfully" });
-  },
-);
+// All roles, including administrators, may only create and read transactions.
+router.use((req, res, next) => {
+  if (["PUT", "PATCH", "DELETE"].includes(req.method)) {
+    res.set("Allow", "GET, POST");
+    return res.status(405).json({ error: "Transactions are permanent and cannot be edited or deleted" });
+  }
+  next();
+});
 
 module.exports = router;

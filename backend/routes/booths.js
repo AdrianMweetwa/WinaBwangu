@@ -129,7 +129,7 @@ router.put("/:id", requireCapability("settings.write"), (req, res) => {
   }
 
   const existing = db
-    .prepare("SELECT id FROM booths WHERE id = ?")
+    .prepare("SELECT id, booth FROM booths WHERE id = ?")
     .get(req.params.id);
   if (!existing) return res.status(404).json({ error: "Booth not found" });
 
@@ -147,6 +147,14 @@ router.put("/:id", requireCapability("settings.write"), (req, res) => {
 
     db.transaction(() => {
       updateBooth.run(booth.trim(), location.trim(), req.params.id);
+      for (const user of db.prepare('SELECT id, assigned_booths FROM users').all()) {
+        const assigned = user.assigned_booths.split(',');
+        if (assigned.includes(existing.booth)) {
+          db.prepare('UPDATE users SET assigned_booths = ? WHERE id = ?').run(
+            assigned.map(code => code === existing.booth ? booth.trim() : code).join(','), user.id,
+          );
+        }
+      }
       clearServices.run(req.params.id);
       for (const serviceName of services || []) {
         const service = findService.get(String(serviceName).trim());
@@ -171,6 +179,9 @@ router.delete("/:id", requireCapability("settings.write"), (req, res) => {
   if (!isPositiveInteger(req.params.id)) {
     return res.status(400).json({ error: "A valid booth id is required" });
   }
+  const booth = db.prepare('SELECT booth FROM booths WHERE id = ?').get(req.params.id);
+  const assignment = booth && db.prepare('SELECT assigned_booths FROM users').all().some(user => user.assigned_booths.split(',').includes(booth.booth));
+  if (assignment) return res.status(400).json({ error: 'Reassign users before deleting their booth' });
   const hasTransactions = db
     .prepare("SELECT 1 FROM transactions WHERE booth_id = ? LIMIT 1")
     .get(req.params.id);

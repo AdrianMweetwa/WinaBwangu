@@ -1237,70 +1237,6 @@
   </div>
 
   <!-- Transaction Edit Modal -->
-  <div class="settings-modal" id="transaction-edit-modal" hidden>
-
-    <div class="settings-modal-backdrop"></div>
-
-    <div class="settings-modal-content" role="dialog" aria-modal="true" aria-labelledby="transaction-edit-title">
-
-      <div class="settings-modal-header">
-        <div>
-          <h3 id="transaction-edit-title">Edit Transaction</h3>
-          <p>Update the transaction details and recalculate the totals.</p>
-        </div>
-        <button type="button" class="settings-modal-close" aria-label="Close transaction edit modal">
-          &times;
-        </button>
-      </div>
-
-      <div class="settings-modal-body">
-        <div class="settings-modal-group">
-          <label for="edit-transaction-type">Transaction Type</label>
-          <select id="edit-transaction-type">
-            <option value="deposit">Cash Deposit</option>
-            <option value="withdrawal">Cash Withdrawal</option>
-          </select>
-        </div>
-
-        <div class="settings-modal-group">
-          <label for="edit-transaction-booth">Booth</label>
-          <select id="edit-transaction-booth"></select>
-        </div>
-
-        <div class="settings-modal-group">
-          <label for="edit-transaction-service">Service</label>
-          <select id="edit-transaction-service"></select>
-        </div>
-
-        <div class="settings-modal-group">
-          <label for="edit-transaction-amount">Amount (ZMW)</label>
-          <input type="number" id="edit-transaction-amount" min="0.01" step="0.01" />
-        </div>
-
-        <div class="settings-modal-group" id="edit-phone-group">
-          <label for="edit-phone-number">Phone Number</label>
-          <input type="text" id="edit-phone-number" />
-        </div>
-
-        <div class="settings-modal-group" id="edit-account-group" hidden>
-          <label for="edit-account-number">Account Number</label>
-          <input type="text" id="edit-account-number" />
-        </div>
-
-        <div class="settings-modal-group">
-          <label for="edit-transaction-date">Date and Time</label>
-          <input type="datetime-local" id="edit-transaction-date" />
-        </div>
-      </div>
-
-      <div class="settings-modal-footer">
-        <button type="button" class="settings-modal-cancel">Cancel</button>
-        <button type="button" class="settings-modal-save" id="save-transaction-edit">Save Changes</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Booth Management Modal -->
   <div class="settings-modal" id="booth-modal" hidden>
 
     <div class="settings-modal-backdrop"></div>
@@ -1576,56 +1512,13 @@
 
 
         <!-- User Booth Assignment -->
-
         <div class="user-assignment-section">
-
-          <div class="user-assignment-header">
-            <div>
-              <h4>Assign Booth *</h4>
-              <p>Select the booths this user can access</p>
-            </div>
-          </div>
-
-          <div class="user-checkbox-grid">
-
-            <label class="service-checkbox">
-              <input type="checkbox" name="user-booths" value="Wina1" />
-              <span>Wina1</span>
-            </label>
-
-            <label class="service-checkbox">
-              <input type="checkbox" name="user-booths" value="Wina2" />
-              <span>Wina2</span>
-            </label>
-
-            <label class="service-checkbox">
-              <input type="checkbox" name="user-booths" value="Wina3" />
-              <span>Wina3</span>
-            </label>
-
-            <label class="service-checkbox">
-              <input type="checkbox" name="user-booths" value="Wina4" />
-              <span>Wina4</span>
-            </label>
-
-            <label class="service-checkbox">
-              <input type="checkbox" name="user-booths" value="Wina5" />
-              <span>Wina5</span>
-            </label>
-
-            <label class="service-checkbox">
-              <input type="checkbox" name="user-booths" value="Wina6" />
-              <span>Wina6</span>
-            </label>
-
-          </div>
-
-          <p class="assignment-empty">
-            No booths assigned
-          </p>
-
+          <div class="user-assignment-header"><div>
+            <h4>Assign Booths</h4><p id="user-booth-help">Select booths for this user.</p>
+          </div></div>
+          <div class="user-checkbox-grid" id="user-booth-options"></div>
+          <p class="assignment-empty">No booth assigned</p>
         </div>
-
 
         <!-- User Service Assignment -->
 

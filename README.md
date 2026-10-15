@@ -18,7 +18,7 @@ WinaBwangu is our group web application for managing booths, financial services,
 
 Install the following before running the project:
 
-- Node.js 18 or newer
+- Node.js 24.x (also recorded in `.nvmrc` and `package.json`)
 - npm
 - Git
 
@@ -34,10 +34,14 @@ cd WinaBwangu
 ## Install Dependencies
 
 ```powershell
-npm install
+npm ci
+Copy-Item .env.example .env
 ```
 
-## Set Up or Reset the Database
+The application loads `.env` automatically. On macOS/Linux use `cp .env.example .env`.
+Keep `DATABASE_URL` unset to use local SQLite. No existing database is required.
+
+## Initialize the Database
 
 Local development still uses SQLite unless `DATABASE_URL` is set:
 
@@ -45,13 +49,22 @@ Local development still uses SQLite unless `DATABASE_URL` is set:
 npm run seed
 ```
 
-The seed command creates the SQLite database, loads the six booths and five services, creates the three demo users, and loads the 308 Appendix 1 transactions. It replaces existing transaction rows, so run it when a clean assignment dataset is required.
+The seed command creates the SQLite database, loads the six booths and five services, creates the three demo users, and loads the 308 Appendix 1 transactions. It only inserts missing transactions; existing records are never changed or deleted. Re-running it is safe.
 
-The root `reset-db.js` utility is for hosted PostgreSQL databases only. It permanently clears the hosted schema and requires `DATABASE_URL`; do not run it for normal local SQLite setup.
+Transactions are permanent after creation. The former reset command is disabled.
+The API rejects PUT, PATCH and DELETE for transactions, and database triggers reject
+updates, deletes and replacement of existing records (including cascading deletes).
+Viewing, searching, filtering, exporting and printing remain available.
 
-```powershell
-npm run reset-db
-```
+The `agent` role can have at most one booth; the form, API and database enforce this.
+The `admin_agent` role can have multiple booths. System administrators automatically
+see all booths, services and transactions without assignments. Switching an admin
+agent to an agent requires choosing at most one booth.
+
+Existing databases retain the first booth of any legacy multi-booth **agent**
+assignment and record the original value in `assignment_migrations` for review.
+Admin-agent assignments are preserved. Demo assignments are Wina1, Wina2 and Wina3
+for `admin_agent`, and Wina4 for `agent`.
 
 ## Render / Hosted Deployment
 
@@ -120,7 +133,7 @@ The demo accounts are for local assignment testing only. Change or remove them b
 
 ## Submission Materials
 
-The `submission/` directory contains our implementation report, formal test plan, and conceptual, use-case, and ER diagrams required by the assignment. Our reproducible Appendix 1 seed contains 308 sequential transactions. Run `npm run seed` before the final demonstration so the local database matches the documented dataset.
+The `submission/` directory contains our implementation report, formal test plan, and conceptual, use-case, and ER diagrams required by the assignment. Our reproducible Appendix 1 seed contains 308 sequential transactions. Use a fresh database and run `npm run seed` for the documented demonstration dataset.
 
 ## Project Structure
 
@@ -157,12 +170,34 @@ WinaBwangu/
 ## Common Commands
 
 ```powershell
-npm install       # Install dependencies
-npm run seed      # Create/reset the local database
-npm run reset-db  # Destructively reset hosted PostgreSQL (DATABASE_URL required)
+npm ci            # Install exact locked dependencies
+npm run seed      # Initialize data without changing existing transactions
 npm test          # Run automated tests
 npm start         # Start the Express server
 ```
+
+Additional automated checks:
+
+```powershell
+npm.cmd run test:browser   # Browser forms, search, confirmations, mobile navigation and printing
+npm.cmd run test:postgres  # Disposable PostgreSQL: schema, seed, CRUD, sessions and API flows
+npm.cmd run test:all       # Run all three suites
+npm.cmd run verify:startup # Smoke-test npm start after seeding a fresh checkout
+```
+
+Run `npm ci` first to install the development tools. Browser tests use installed
+Microsoft Edge on Windows when available; otherwise run `npx playwright install chromium`
+once. Set `PLAYWRIGHT_CHANNEL` to select another installed browser channel. Browser
+checks run headlessly and use a temporary SQLite database. Print checks verify the
+print controls and receipt print styles; they do not interact with a physical printer.
+Use `npm` instead of `npm.cmd` on macOS/Linux. On Windows, `npm.cmd` also works when
+PowerShell's execution policy blocks `npm.ps1`.
+
+PostgreSQL checks start an embedded PostgreSQL server on a temporary local port and
+remove its temporary database afterward. They do not use your configured application
+database. The first dependency installation downloads platform-specific PostgreSQL
+binaries. For a local PostgreSQL application server without TLS, set `DATABASE_SSL=false`;
+hosted connections retain the existing TLS behavior by default.
 
 Press `Ctrl+C` in the terminal to stop the server.
 

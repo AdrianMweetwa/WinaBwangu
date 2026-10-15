@@ -22,6 +22,15 @@ function toList(csv) {
   return csv ? csv.split(",").filter(Boolean) : [];
 }
 
+function assignmentError(booths, role) {
+  if (booths === undefined) return null;
+  if (!Array.isArray(booths)) return 'Booth assignments must be an array';
+  if (role === 'agent' && booths.length > 1) return 'Assign at most one booth per agent';
+  if (booths.some(booth => !isNonEmptyString(booth, 50) || booth.includes(','))) return 'Select a valid booth';
+  if (booths.some(booth => !db.prepare('SELECT id FROM booths WHERE booth = ?').get(booth.trim()))) return 'Selected booth does not exist';
+  return null;
+}
+
 router.get("/", (req, res) => {
   const rows = db
     .prepare(`SELECT ${PUBLIC_COLUMNS} FROM users ORDER BY id`)
@@ -37,6 +46,8 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
+  const error = assignmentError(req.body.assigned_booths, req.body.role);
+  if (error) return res.status(400).json({ error });
   const {
     username,
     full_name,
@@ -79,7 +90,7 @@ router.post("/", (req, res) => {
         hashPassword(password),
         role,
         company || null,
-        Array.isArray(assigned_booths) ? assigned_booths.join(",") : "",
+        Array.isArray(assigned_booths) ? assigned_booths.map(value => value.trim()).join(",") : "",
         Array.isArray(assigned_services) ? assigned_services.join(",") : "",
         status === "inactive" ? "inactive" : "active",
       );
@@ -106,6 +117,11 @@ router.put("/:id", (req, res) => {
   if (!existing) {
     return res.status(404).json({ error: "User not found" });
   }
+  const error = assignmentError(
+    req.body.assigned_booths === undefined ? toList(existing.assigned_booths) : req.body.assigned_booths,
+    req.body.role || existing.role,
+  );
+  if (error) return res.status(400).json({ error });
 
   const {
     username,
@@ -157,7 +173,7 @@ router.put("/:id", (req, res) => {
       role || existing.role,
       company !== undefined ? company : existing.company,
       Array.isArray(assigned_booths)
-        ? assigned_booths.join(",")
+        ? assigned_booths.map(value => value.trim()).join(",")
         : existing.assigned_booths,
       Array.isArray(assigned_services)
         ? assigned_services.join(",")

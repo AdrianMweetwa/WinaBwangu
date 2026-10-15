@@ -85,10 +85,10 @@ const insertTransaction = db.prepare(`
 `);
 
 const seedTransactions = db.transaction(() => {
-  // Rebuild the transaction sample so the seed is repeatable.
-  db.prepare("DELETE FROM transactions").run();
+  // Existing transactions are permanent. Re-running the seed only adds missing rows.
 
   for (const transaction of appendixTransactions) {
+    if (db.prepare("SELECT 1 FROM transactions WHERE transaction_id = ?").get(transaction.transaction_id)) continue;
     const booth = findBooth.get(transaction.booth_code);
     const service = findService.get(transaction.service_name);
     if (!booth || !service) {

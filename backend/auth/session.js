@@ -66,8 +66,8 @@ function createSession(userId, remember = false) {
 function getUserForSession(token) {
   if (!token) return null;
   db.prepare(
-    "DELETE FROM auth_sessions WHERE expires_at <= datetime('now')",
-  ).run();
+    "DELETE FROM auth_sessions WHERE expires_at <= ?",
+  ).run(new Date().toISOString());
   const session = db
     .prepare(
       "SELECT user_id FROM auth_sessions WHERE token_hash = ? AND expires_at > ?",
@@ -99,8 +99,8 @@ function createPasswordResetToken(userId) {
     Date.now() + RESET_TOKEN_MINUTES * 60 * 1000,
   ).toISOString();
   db.prepare(
-    "DELETE FROM password_reset_tokens WHERE user_id = ? OR expires_at <= datetime('now')",
-  ).run(userId);
+    "DELETE FROM password_reset_tokens WHERE user_id = ? OR expires_at <= ?",
+  ).run(userId, new Date().toISOString());
   db.prepare(
     "INSERT INTO password_reset_tokens (user_id, token_hash, expires_at) VALUES (?, ?, ?)",
   ).run(userId, hashToken(token), expiresAt);

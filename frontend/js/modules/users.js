@@ -57,7 +57,7 @@ function renderUsersTable(rows) {
   }
   rows.forEach((user) => {
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${user.full_name}</td><td>${user.username}</td><td>${user.email}</td><td>${roleLabels[user.role] || user.role}</td><td>${user.company || "N/A"}</td><td>${user.assigned_booths.join(", ") || "N/A"}</td><td>${user.assigned_services.join(", ") || "N/A"}</td><td>${user.last_login ? formatDateTime(user.last_login) : "Never"}</td><td><span class="user-status ${user.status}">${user.status === "active" ? "Active" : "Inactive"}</span></td><td class="user-actions"><button type="button" class="user-action-btn edit-user-btn">Edit</button><button type="button" class="user-action-btn delete delete-user-btn">Delete</button></td>`;
+    row.innerHTML = `<td>${user.full_name}</td><td>${user.username}</td><td>${user.email}</td><td>${roleLabels[user.role] || user.role}</td><td>${user.company || "N/A"}</td><td>${user.role === "system_admin" ? "All booths" : user.assigned_booths.join(", ") || "N/A"}</td><td>${user.role === "system_admin" ? "All services" : user.assigned_services.join(", ") || "N/A"}</td><td>${user.last_login ? formatDateTime(user.last_login) : "Never"}</td><td><span class="user-status ${user.status}">${user.status === "active" ? "Active" : "Inactive"}</span></td><td class="user-actions"><button type="button" class="user-action-btn edit-user-btn">Edit</button><button type="button" class="user-action-btn delete delete-user-btn">Delete</button></td>`;
     row
       .querySelector(".edit-user-btn")
       .addEventListener("click", () => openUserModal(user));
@@ -79,6 +79,34 @@ function renderUsersTable(rows) {
   });
 }
 
+function renderBoothOptions(selected) {
+  const role = document.getElementById("user-role").value;
+  const boothOptions = document.getElementById("user-booth-options");
+  const choices = selected || Array.from(boothOptions.querySelectorAll("input:checked"), input => input.value).filter(Boolean);
+  const single = role === "agent";
+  const assigned = single ? choices.slice(0, 1) : choices;
+  boothOptions.replaceChildren();
+  document.getElementById("user-booth-help").textContent = role === "system_admin"
+    ? "System administrators automatically see all booths and services."
+    : single ? "Select one booth for this agent, or leave unassigned."
+    : "Select the booths this admin agent can access.";
+  if (role === "system_admin") return;
+  const booths = single ? [{ booth: "" }, ...state.booths] : state.booths;
+  for (const booth of booths) {
+    const label = document.createElement("label");
+    label.className = "service-checkbox";
+    const input = document.createElement("input");
+    input.type = single ? "radio" : "checkbox";
+    input.name = "user-booths";
+    input.value = booth.booth;
+    input.checked = booth.booth ? assigned.includes(booth.booth) : !assigned.length;
+    const text = document.createElement("span");
+    text.textContent = booth.booth || "Unassigned";
+    label.append(input, text);
+    boothOptions.append(label);
+  }
+}
+
 function openUserModal(user) {
   editingUserId = user ? user.id : null;
   const modal = document.getElementById("user-modal");
@@ -98,16 +126,14 @@ function openUserModal(user) {
       : user?.company
         ? "other"
         : "";
-  modal.querySelectorAll('input[name="user-booths"]').forEach((checkbox) => {
-    checkbox.checked = !!user?.assigned_booths.includes(checkbox.value);
-  });
+  renderBoothOptions(user?.assigned_booths || []);
   modal.querySelectorAll('input[name="user-services"]').forEach((checkbox) => {
     checkbox.checked = !!user?.assigned_services.includes(checkbox.value);
   });
   modal.querySelectorAll(".user-checkbox-grid").forEach((grid) => {
     const hint = grid.nextElementSibling;
     if (hint && hint.classList.contains("assignment-empty"))
-      hint.hidden = !!grid.querySelector("input:checked");
+      hint.hidden = document.getElementById("user-role").value === "system_admin" || !!grid.querySelector("input:checked");
   });
   openModal(modal);
 }
@@ -116,6 +142,7 @@ export function setupUsersModal() {
   if (!canPerform("users.manage")) return;
   const modal = document.getElementById("user-modal");
   wireModalDismiss(modal);
+  document.getElementById("user-role").addEventListener("change", () => renderBoothOptions());
   document
     .getElementById("add-user-btn")
     .addEventListener("click", () => openUserModal(null));
@@ -123,7 +150,7 @@ export function setupUsersModal() {
     grid.addEventListener("change", () => {
       const hint = grid.nextElementSibling;
       if (hint && hint.classList.contains("assignment-empty"))
-        hint.hidden = !!grid.querySelector("input:checked");
+        hint.hidden = document.getElementById("user-role").value === "system_admin" || !!grid.querySelector("input:checked");
     }),
   );
   document.getElementById("save-user").addEventListener("click", () => {
@@ -145,10 +172,14 @@ export function setupUsersModal() {
           : null;
     const assignedBooths = Array.from(
       modal.querySelectorAll('input[name="user-booths"]:checked'),
-    ).map((checkbox) => checkbox.value);
+    ).map((checkbox) => checkbox.value).filter(Boolean);
     const assignedServices = Array.from(
       modal.querySelectorAll('input[name="user-services"]:checked'),
-    ).map((checkbox) => checkbox.value);
+    ).map((checkbox) => checkbox.value).filter(Boolean);
+    if (role === "agent" && assignedBooths.length > 1) {
+      alert("Assign at most one booth per agent.");
+      return;
+    }
     if (!username || !fullName || !email || !role || !companyChoice) {
       alert("Please fill in every required field.");
       return;

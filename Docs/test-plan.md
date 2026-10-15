@@ -30,8 +30,8 @@ This test plan records the checks carried out by our group to verify the applica
 | CRUD-01 | Create | Create a booth, service or user | Confirmation then success modal appears; row refreshes | Pass |
 | CRUD-02 | Update | Edit a booth, service or user | Confirmation then success modal appears; new values persist | Pass |
 | CRUD-03 | Delete | Delete an allowed record | Confirmation is required and success feedback appears | Pass |
-| CRUD-04 | Transaction update | Edit a seeded transaction as an authorised user | The transaction keeps its reference, recalculates tax/revenue on the server and refreshes with the new values | Pass |
-| CRUD-05 | Transaction delete | Open delete for a seeded transaction and cancel, then delete an isolated test transaction | Confirmation is required; cancel preserves the row and confirmed deletion removes it | Pass |
+| CRUD-04 | Transaction immutability | Attempt PUT and PATCH against a created transaction | Both return 405 and the record remains unchanged | Automated |
+| CRUD-05 | Transaction immutability | Attempt DELETE through the API and direct SQL | API returns 405; database rejects deletion; UI has no delete action | Automated |
 | TRANS-01 | Transaction | Process a valid deposit and withdrawal | Confirmation modal appears before save; recent activity updates | Pass |
 | TRANS-02 | Receipt | Complete a transaction and choose Print Receipt | Browser print dialog opens with receipt content | Pass |
 | DASH-01 | Dashboard | Review summary cards after seeding | Revenue, count, capital K740,000 and six booths are shown | Pass |

@@ -35,6 +35,12 @@ function closeMobileSidebar() {
   if (sidebar && window.matchMedia("(max-width: 900px)").matches) {
     sidebar.inert = true;
     sidebar.setAttribute("aria-hidden", "true");
+    const toggle = document.getElementById("sidebar-toggle");
+    if (toggle) {
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Open navigation");
+      toggle.title = "Open navigation";
+    }
   }
 }
 

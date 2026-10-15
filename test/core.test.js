@@ -1,5 +1,8 @@
+process.env.NODE_ENV = "test";
 const fs = require("node:fs");
 const path = require("node:path");
+const os = require("node:os");
+const { execFileSync } = require("node:child_process");
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
@@ -13,9 +16,22 @@ const {
   VALID_ROLES,
   VALID_TRANSACTION_TYPES,
 } = require("../backend/utils/validation");
-const { requireCapability } = require("../backend/middleware/auth");
 const { nextTransactionId } = require("../backend/utils/transaction-rules");
-const db = require("../backend/db");
+// Seed an isolated database so tests do not depend on or modify application data.
+const testDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "winabwangu-test-"));
+process.env.DATABASE_PATH = path.join(testDirectory, "test.db");
+delete process.env.DATABASE_URL;
+let db;
+test.after(() => {
+  if (db) db.close();
+  fs.rmSync(testDirectory, { recursive: true, force: true });
+});
+execFileSync(process.execPath, [path.join(__dirname, "../database/seed.js")], {
+  env: process.env,
+  stdio: "pipe",
+});
+db = require("../backend/db");
+const { requireCapability } = require("../backend/middleware/auth");
 
 test("database compatibility layer converts SQLite statements to PostgreSQL-safe SQL", () => {
   assert.equal(typeof db.prepare, "function");
@@ -46,14 +62,16 @@ test("password hashes verify correctly without exposing the original password", 
 });
 
 test("transaction IDs are generated from the largest database ID", () => {
-  const existing = db
-    .prepare("SELECT transaction_id FROM transactions ORDER BY id DESC LIMIT 1")
-    .get();
-  const nextId = nextTransactionId(db);
-  assert.equal(
-    nextId,
-    `WB${String(Number(existing.transaction_id.replace(/^WB/, "")) + 1).padStart(7, "0")}`,
-  );
+  assert.equal(nextTransactionId(db), "WB0000309");
+});
+
+test("transaction IDs start at one when there are no transactions", () => {
+  const Database = require("better-sqlite3");
+  const empty = new Database(":memory:");
+  try {
+    empty.exec("CREATE TABLE transactions (id INTEGER PRIMARY KEY, transaction_id TEXT)");
+    assert.equal(nextTransactionId(empty), "WB0000001");
+  } finally { empty.close(); }
 });
 
 test("startup guarantees the documented demo users are available", () => {
@@ -113,27 +131,12 @@ test("role capabilities block unauthorized management actions", () => {
   assert.equal(can("agent", "users.manage"), false);
 });
 
-test("transactions expose complete CRUD routes and controls", () => {
-  const routes = fs.readFileSync(
-    path.join(__dirname, "../backend/routes/transactions.js"),
-    "utf8",
-  );
-  const transactionUi = fs.readFileSync(
-    path.join(__dirname, "../frontend/js/modules/transactions.js"),
-    "utf8",
-  );
-  const transactionModal = fs.readFileSync(
-    path.join(__dirname, "../frontend/index.html"),
-    "utf8",
-  );
-
-  assert.match(routes, /router\.get\(\s*["']\/:transactionId/);
-  assert.match(routes, /router\.post\(\s*["']\//);
-  assert.match(routes, /router\.put\(\s*["']\/:transactionId/);
-  assert.match(routes, /router\.delete\(\s*["']\/:transactionId/);
-  assert.match(transactionUi, /api\.put\(/);
-  assert.match(transactionUi, /api\.delete\(/);
-  assert.match(transactionModal, /id="transaction-edit-modal"/);
+test("transaction UI contains only read actions", () => {
+  const ui = fs.readFileSync(path.join(__dirname, "../frontend/js/modules/transactions.js"), "utf8");
+  const html = fs.readFileSync(path.join(__dirname, "../frontend/index.html"), "utf8");
+  assert.match(ui, /view-transaction-btn/);
+  assert.doesNotMatch(ui, /edit-transaction-btn|delete-transaction-btn|api\.(put|delete)/);
+  assert.doesNotMatch(html, /transaction-edit-modal/);
 });
 
 test("global search dropdown stays above the app header", () => {

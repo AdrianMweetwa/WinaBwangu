@@ -36,7 +36,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   wireModalDismiss(document.getElementById("receipt-modal"));
   wireModalDismiss(document.getElementById("transaction-confirmation-modal"));
-  wireModalDismiss(document.getElementById("transaction-edit-modal"));
   wireModalDismiss(document.getElementById("crud-confirmation-modal"));
   wireModalDismiss(document.getElementById("crud-success-modal"));
   document.getElementById("confirm-crud-action").addEventListener("click", confirmCrudAction);

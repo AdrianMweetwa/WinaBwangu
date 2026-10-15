@@ -2,12 +2,17 @@
   "name": "winabwangu",
   "version": "1.0.0",
   "description": "Wina Bwangu booth, service, transaction and user management app",
-  "main": "index.js",
+  "main": "backend/server.js",
+  "engines": { "node": ">=24 <25" },
   "scripts": {
     "start": "node backend/server.js",
     "seed": "node database/seed.js",
     "reset-db": "node reset-db.js",
-    "test": "node --test"
+    "test": "node --test test/*.test.js",
+    "test:browser": "playwright test",
+    "test:postgres": "node scripts/test-postgres.mjs",
+    "verify:startup": "node scripts/verify-start.mjs",
+    "test:all": "npm run test && npm run test:browser && npm run test:postgres"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +23,9 @@
     "deasync": "^0.1.30",
     "express": "^5.2.1",
     "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "embedded-postgres": "^18.4.0-beta.17"
   }
 }
